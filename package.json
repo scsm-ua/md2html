@@ -1,0 +1,16 @@
+{
+  "name": "md2html",
+  "version": "0.0.1",
+  "scripts": {
+    "build": "gulp build"
+  },
+  "dependencies": {
+    "gulp-rename": "^2.0.0",
+    "gulp-sass": "^5.1.0",
+    "marked": "^13.0.2",
+    "sass": "^1.77.8"
+  },
+  "devDependencies": {
+    "gulp": "^4.0.2"
+  }
+}
