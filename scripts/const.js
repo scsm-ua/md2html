@@ -5,8 +5,8 @@ const PROJECT_ROOT_DIR = process.cwd();
 const DIRS = {
   INPUT: PROJECT_ROOT_DIR + '/input/article',
   OUTPUT: PROJECT_ROOT_DIR + '/output',
-  PROD_OUTPUT: PROJECT_ROOT_DIR + '/output/prod',
-  TEST_OUTPUT: PROJECT_ROOT_DIR + '/output/test',
+  JSON_OUTPUT: PROJECT_ROOT_DIR + '/output/json',
+  HTML_OUTPUT: PROJECT_ROOT_DIR + '/output/html',
   STYLES: PROJECT_ROOT_DIR + '/styles'
 };
 
