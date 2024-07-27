@@ -15,12 +15,13 @@ body {
   letter-spacing: 0.64px;
   margin: 0;
   color: #555;
-  overflow: auto;
 }
 
-h1 {
-  font-size: 24px;
-  margin-bottom: 38px;
+main {
+  margin: 20px auto;
+  padding: 20px;
+  max-width: 700px;
+  overflow: auto;
 }
 
 p {
@@ -31,48 +32,49 @@ strong {
   font-weight: 700;
 }
 
-pre {
-  width: fit-content;
-  margin: 16px 0 0;
-  padding: 4px 4px 4px var(--verse-left-margin);
-  word-break: break-all;
-  word-wrap: break-word;
+
+/* The title */
+h1 {
+  font-size: 24px;
+  margin-bottom: 38px;
 }
 
-pre code {
-  font-family: var(--font-family);
-  font-weight: 700;
-  line-height: 1.5;
-}
-
+/* HR between the main part and the footnotes area */
 hr {
   margin: 64px 0;
   font-weight: 300;
 }
 
-//pre {
-//  display: block;
-//  padding: 9.5px;
-//  margin: 0 0 10px;
-//  font-size: 13px;
-//  line-height: 1.42857143;
-//  color: #333;
-//  word-break: break-all;
-//  word-wrap: break-word;
-//  background-color: #f5f5f5;
-//  border: 1px solid #ccc;
-//  border-radius: 4px;
-//}
+/* Timestamp */
+em[data-type="time"] {
+  font-weight: 200;
+  color: gray;
+  font-size: 14px;
+}
 
+/**/
+.Meta {
+  font-size: 12px;
+  margin-bottom: 48px;
+}
+
+/**
+ */
 .Article {
-  margin: 20px auto;
-  padding: 20px;
-  max-width: 700px;
+  /* Verse block */
+  pre {
+    width: fit-content;
+    margin: 16px 0 0;
+    padding: 4px 4px 4px var(--verse-left-margin);
+    word-break: break-all;
+    word-wrap: break-word;
+  }
   
-  &__time {
-    font-weight: 200;
-    color: gray;
-    font-size: 14px;
+  /* Verse block text */
+  pre code {
+    font-family: var(--font-family);
+    font-weight: 700;
+    line-height: 1.5;
   }
   
   &__link {
@@ -88,6 +90,11 @@ hr {
   &__foot-link-container {
     padding-left: var(--verse-left-margin);
     margin-bottom: 20px;
+  }
+  
+  &__footnotes {
+    margin-top: 64px;
+    border-top: 1px solid grey
   }
   
   &__footnote {

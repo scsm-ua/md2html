@@ -14,12 +14,13 @@ body {
   letter-spacing: 0.64px;
   margin: 0;
   color: #555;
-  overflow: auto;
 }
 
-h1 {
-  font-size: 24px;
-  margin-bottom: 38px;
+main {
+  margin: 20px auto;
+  padding: 20px;
+  max-width: 700px;
+  overflow: auto;
 }
 
 p {
@@ -30,34 +31,48 @@ strong {
   font-weight: 700;
 }
 
-pre {
+/* The title */
+h1 {
+  font-size: 24px;
+  margin-bottom: 38px;
+}
+
+/* HR between the main part and the footnotes area */
+hr {
+  margin: 64px 0;
+  font-weight: 300;
+}
+
+/* Timestamp */
+em[data-type=time] {
+  font-weight: 200;
+  color: gray;
+  font-size: 14px;
+}
+
+/**/
+.Meta {
+  font-size: 12px;
+  margin-bottom: 48px;
+}
+
+/**
+ */
+.Article {
+  /* Verse block */
+  /* Verse block text */
+}
+.Article pre {
   width: fit-content;
   margin: 16px 0 0;
   padding: 4px 4px 4px var(--verse-left-margin);
   word-break: break-all;
   word-wrap: break-word;
 }
-
-pre code {
+.Article pre code {
   font-family: var(--font-family);
   font-weight: 700;
   line-height: 1.5;
-}
-
-hr {
-  margin: 64px 0;
-  font-weight: 300;
-}
-
-.Article {
-  margin: 20px auto;
-  padding: 20px;
-  max-width: 700px;
-}
-.Article__time {
-  font-weight: 200;
-  color: gray;
-  font-size: 14px;
 }
 .Article__link:not(:hover), .Article__link:visited {
   color: dodgerblue;
@@ -68,6 +83,10 @@ hr {
 .Article__foot-link-container {
   padding-left: var(--verse-left-margin);
   margin-bottom: 20px;
+}
+.Article__footnotes {
+  margin-top: 64px;
+  border-top: 1px solid grey;
 }
 .Article__footnote {
   margin: 30px 0;

@@ -1,45 +1,22 @@
-const { marked } = require('marked');
+const { Marked } = require('marked');
 const { Transform } = require('stream');
+const yaml = require('yaml');
 /**/
-const { htmlRenderer } = require('./markedExt');
-
-const walkTokens = (token) => {
-  if (token.type === 'paragraph') {
-    console.log('+++++' + JSON.stringify(token, null, 2) + '+++++');
-  }
-  
-  return token;
-};
+const { createHtmlOutput, createJsonOutput } = require('./output');
+const { footnotesRenderer, textRenderer } = require('./markedExt');
 
 /**/
-marked.use({
-  // hooks: {
-  //   preprocess:
-  // },
-  renderer: htmlRenderer,
-  // walkTokens
-});
+const footnotesParser = new Marked({ renderer: footnotesRenderer });
+const textParser = new Marked({ renderer: textRenderer });
 
-/**
- *
- */
-function convertFiles() {
+/**/
+function convertFiles(isProdMode) {
   return new Transform({
     objectMode: true,
     
     transform(file, encoding, callback) {
       try {
-        // const htmlString = fillTemplate(
-        //   songbook_id,
-        //   template,
-        //   JSON.parse(file.contents.toString()),
-        //   file.path
-        // );
-        const content = cutOffMeta(file.contents.toString());
-        const htmlString = marked.parse(content);
-        // console.log(htmlString);
-        
-        file.contents = Buffer.from(wrapIntoDoc(htmlString));
+        file.contents = Buffer.from(md2html(file.contents.toString(), isProdMode));
         this.push(file);
         callback();
         
@@ -50,39 +27,25 @@ function convertFiles() {
   });
 }
 
-/**
- * Removes YAML metadata in the beginning of a file.
- */
-function cutOffMeta(str) {
-  return str.slice(str.lastIndexOf('---') + 3).trimStart();
-}
 
 /**
  *
  */
-function wrapIntoDoc(str) {
-  return `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Title</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <div class="Article">
-    ${str}
-  </div>
-</body>
-</html>
-  `;
-}
-
-/**
- *
- */
-function md2html(str) {
-
+function md2html(str, isProdMode) {
+  const [meta, text, notes] = str.split('---\n')
+    .filter(Boolean)
+    .map((s) => s.trim());
+  
+  const args = {
+    meta: yaml.parse(meta),
+    title: text.slice(0, text.indexOf('\n')).replace('#', '').trim(),
+    text: textParser.parse(text),
+    footnotes: notes
+      ? footnotesParser.parse(notes).replace(/^\s+|\s+$/gi, '')
+      : ''
+  };
+  
+  return isProdMode ? createJsonOutput(args) : createHtmlOutput(args);
 }
 
 /**/

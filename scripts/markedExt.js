@@ -1,39 +1,21 @@
-/**/
+/**
+ * Footnote link [^_ftn1234]
+ * Footnote [^_ftn1234]: Text...
+ */
 const FOOTNOTE_LINK_START = '[^_ftn';
 const FOOTNOTE_LINK_END = ']';
 const FOOTNOTE_END = ']:';
 const FOOTNOTE_REGEX = /\[\^_ftn(\d+)]:/;
 
-/**
- * Emphasis custom renderer.
- */
-function em(text) {
-  return text.startsWith('#') && text.endsWith('#')
-    ? `<em class="Article__time">${text}</em>`
-    : `<em class="Article__italic">${text}</em>`;
-}
 
 /**
- * Paragraph custom renderer.
+ * Footnote custom renderer.
  */
-function paragraph(text) {
-  const ftnStartCondition = text.trimStart().startsWith(FOOTNOTE_LINK_START);
-  
-  // Footnote links.
-  if (ftnStartCondition && text.slice(0, 12).trimEnd().endsWith(FOOTNOTE_LINK_END)) {
-    const number = /\d+/.exec(text);
-    return `
-        <div class="Article__foot-link-container" id="ftn-link-${number}">
-          <a class="Article__link" href="#ftn-${number}">
-            [${number}]
-          </a>
-        </div>
-      `;
-  }
-  
-  // Footnotes.
-  if (ftnStartCondition && FOOTNOTE_REGEX.test(text.slice(0, 12))) {
-    // console.log('+++++' + text + '+++++');
+function processFootnotes(text) {
+  if (
+    text.trimStart().startsWith(FOOTNOTE_LINK_START) &&
+    FOOTNOTE_REGEX.test(text.slice(0, 12))
+  ) {
     const number = FOOTNOTE_REGEX.exec(text.slice(0, 12))[1];
     const ftn = `
         <a class="Article__link" href="#ftn-link-${number}">
@@ -52,10 +34,55 @@ function paragraph(text) {
   return `<p>${text}</p>`;
 }
 
+
 /**
- * Override function for MD blocks.
+ * Footnote link custom renderer.
  */
-const renderer = { em, paragraph };
+function processFootnoteLinks(text) {
+  if (
+    text.trimStart().startsWith(FOOTNOTE_LINK_START) &&
+    text.slice(0, 12).trimEnd().endsWith(FOOTNOTE_LINK_END)
+  ) {
+    const number = /\d+/.exec(text);
+    return `
+        <div class="Article__foot-link-container" id="ftn-link-${number}">
+          <a class="Article__link" href="#ftn-${number}">
+            [${number}]
+          </a>
+        </div>
+      `;
+  }
+  
+  return `<p>${text}</p>`;
+}
+
+
+/**
+ * Ignore H1 tag.
+ */
+function ignoreTitle(text, depth) {
+  return depth === 1 ? '' : `<h${depth}>${text}</h${depth}>`;
+}
+
+
+/**
+ * Emphasis custom renderer. Sets 'class' attribute over timestamps and the rest of EM tags.
+ */
+function markTimeStamps(text) {
+  return text.startsWith('#') && text.endsWith('#')
+    ? `<em data-type="time">${text}</em>`
+    : `<em>${text}</em>`;
+}
+
 
 /**/
-module.exports = { htmlRenderer: renderer };
+module.exports = {
+  footnotesRenderer: {
+    paragraph: processFootnotes
+  },
+  textRenderer: {
+    em: markTimeStamps,
+    heading: ignoreTitle,
+    paragraph: processFootnoteLinks
+  }
+};
