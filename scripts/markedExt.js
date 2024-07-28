@@ -2,20 +2,14 @@
  * Footnote link [^_ftn1234]
  * Footnote [^_ftn1234]: Text...
  */
-const FOOTNOTE_LINK_START = '[^_ftn';
-const FOOTNOTE_LINK_END = ']';
-const FOOTNOTE_END = ']:';
 const FOOTNOTE_REGEX = /\[\^_ftn(\d+)]:/;
-
+const FOOTNOTE_LINK_REGEX = /\[\^_ftn(\d+)]/;
 
 /**
  * Footnote custom renderer.
  */
 function processFootnotes(text) {
-  if (
-    text.trimStart().startsWith(FOOTNOTE_LINK_START) &&
-    FOOTNOTE_REGEX.test(text.slice(0, 12))
-  ) {
+  if (FOOTNOTE_REGEX.test(text.slice(0, 12))) {
     const number = FOOTNOTE_REGEX.exec(text.slice(0, 12))[1];
     const ftn = `
         <a class="Article__link" href="#ftn-link-${number}">
@@ -23,10 +17,9 @@ function processFootnotes(text) {
         </a>
       `;
     
-    const content = text.replace(FOOTNOTE_LINK_START + number + FOOTNOTE_END, ftn);
     return `
         <p class="Article__footnote" id="ftn-${number}">
-          ${content}
+          ${text.replace(FOOTNOTE_REGEX, ftn)}
         </p>
       `;
   }
@@ -39,11 +32,8 @@ function processFootnotes(text) {
  * Footnote link custom renderer.
  */
 function processFootnoteLinks(text) {
-  if (
-    text.trimStart().startsWith(FOOTNOTE_LINK_START) &&
-    text.slice(0, 12).trimEnd().endsWith(FOOTNOTE_LINK_END)
-  ) {
-    const number = /\d+/.exec(text);
+  if (FOOTNOTE_LINK_REGEX.test(text)) {
+    const number = FOOTNOTE_LINK_REGEX.exec(text)[1];
     return `
         <div class="Article__foot-link-container" id="ftn-link-${number}">
           <a class="Article__link" href="#ftn-${number}">

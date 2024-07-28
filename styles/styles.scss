@@ -55,7 +55,12 @@ em[data-type="time"] {
 /**/
 .Meta {
   font-size: 12px;
-  margin-bottom: 48px;
+  margin-bottom: 80px;
+  
+  pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
 }
 
 /**
@@ -93,8 +98,7 @@ em[data-type="time"] {
   }
   
   &__footnotes {
-    margin-top: 64px;
-    border-top: 1px solid grey
+    margin-top: 80px;
   }
   
   &__footnote {
