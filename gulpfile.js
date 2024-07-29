@@ -5,7 +5,7 @@ const shell = require('gulp-shell');
 /**/
 const { convertFiles } = require('./scripts/md2html');
 const { DIRS } = require('./scripts/const');
-
+const { getDictionaries } = require('./scripts/helpers');
 
 /**
  *
@@ -13,7 +13,7 @@ const { DIRS } = require('./scripts/const');
 gulp.task('md2html-json', () => {
   return gulp
     .src(DIRS.INPUT + '/**/*.md')
-    .pipe(convertFiles(true))
+    .pipe(convertFiles(getDictionaries(), true))
     .pipe(
       rename({ extname: '.json' })
     )
@@ -27,7 +27,7 @@ gulp.task('md2html-json', () => {
 gulp.task('md2html-html', () => {
   return gulp
     .src(DIRS.INPUT + '/**/*.md')
-    .pipe(convertFiles())
+    .pipe(convertFiles(getDictionaries()))
     .pipe(
       rename({ extname: '.html' })
     )

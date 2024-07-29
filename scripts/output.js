@@ -9,6 +9,8 @@ function createHtmlOutput({ footnotes, meta, title, text }) {
     <head>
       <meta charset="UTF-8">
       <title>${title}</title>
+      <link rel="stylesheet" href="../styles.css">
+      <!-- For the old articles -->
       <link rel="stylesheet" href="../../styles.css">
     </head>
     

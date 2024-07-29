@@ -5,6 +5,7 @@
     "build": "gulp build"
   },
   "dependencies": {
+    "archive": "scsm-ua/sridhar-maharaj-archive#main",
     "gulp-rename": "^2.0.0",
     "gulp-sass": "^5.1.0",
     "gulp-shell": "^0.8.0",
