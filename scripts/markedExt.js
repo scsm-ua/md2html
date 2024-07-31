@@ -28,18 +28,23 @@ function processFootnotes(text) {
  */
 function processFootnoteLinks(text) {
   if (REGEXP.FOOTNOTE_LINK_REGEXP.test(text)) {
-    const update = text.replaceAll(
-      REGEXP.FOOTNOTE_LINK_REGEXP,
-      (_, number) =>
-        `<a class="Article__link Article__foot-link" href="#ftn-${number}" id="ftn-link-${number}">
-          [${number}]
-        </a>`
-    );
-    
+    const update = text.replaceAll(REGEXP.FOOTNOTE_LINK_REGEXP, linkRenderer);
     return `<p>${update}</p>`;
   }
   
   return `<p>${text}</p>`;
+}
+
+
+/**
+ *
+ */
+function linkRenderer(_, number) {
+  return `
+    <a class="Article__link Article__foot-link" href="#ftn-${number}" id="ftn-link-${number}">
+      [${number}]
+    </a>
+  `;
 }
 
 

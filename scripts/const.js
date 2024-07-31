@@ -3,8 +3,7 @@ const PROJECT_ROOT_DIR = process.cwd();
 
 /**/
 const PATH = {
-  ARCHIVE_PATH: '/node_modules/archive/docs',
-  ARCHIVE_ROOT_PATH: PROJECT_ROOT_DIR + '/node_modules/archive'
+  ARCHIVE_PATH: '/node_modules/archive/docs'
 };
 
 /**/

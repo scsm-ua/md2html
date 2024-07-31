@@ -7,7 +7,7 @@ const shell = require('gulp-shell');
 /**/
 const { convertFiles } = require('./scripts/md2html');
 const { convertTags } = require('./scripts/convertTags');
-const { DIRS, FILES, PATH } = require('./scripts/const');
+const { DIRS, FILES } = require('./scripts/const');
 const { getDictionaries } = require('./scripts/helpers');
 
 /**
@@ -91,11 +91,7 @@ gulp.task('validate-html', () => {
 /**
  *
  */
-gulp.task('update-source', gulp.series(
-  shell.task('rm -rf ' + PATH.ARCHIVE_ROOT_PATH),
-  shell.task('yarn install')
-));
-
+gulp.task('update-source', shell.task('yarn upgrade archive'));
 
 /**
  *
