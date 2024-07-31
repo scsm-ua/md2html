@@ -5,12 +5,12 @@ const yaml = require('yaml');
 /**/
 const { createHtmlOutput, createJsonOutput } = require('./output');
 const { footnotesRenderer, textRenderer } = require('./markedExt');
-const { validateMeta } = require('./helpers');
+const { REGEXP } = require('./const');
+const { toIsoDateWithTimezone, validateMeta } = require('./helpers');
 
 /**/
 const footnotesParser = new Marked({ renderer: footnotesRenderer });
 const textParser = new Marked({ renderer: textRenderer });
-const DATE_REGEXP = /^([1-2]\d{3})[.-]([01]\d)([.-]([0-3]\d))?$/;
 
 
 /**/
@@ -38,9 +38,13 @@ function convertFiles(dictionaries, isProdMode) {
  *
  */
 function md2html(str, dictionaries, isProdMode) {
-  const [meta, text, notes] = str.split('---\n')
+  const [meta, _text] = str.split('---\n')
     .filter(Boolean)
     .map((s) => s.trim());
+  
+  const notesStart = _text.search(REGEXP.FOOTNOTE_REGEXP);
+  const notes = _text.slice(notesStart);
+  const text = _text.slice(0, notesStart).trimEnd();
   
   const _meta = yaml.parse(meta);
   validateMeta(_meta, dictionaries);
@@ -62,30 +66,16 @@ function md2html(str, dictionaries, isProdMode) {
  *
  */
 function processMeta({ tags, ...data }, str) {
-  const date = tags?.find((item) => DATE_REGEXP.test(item));
+  const date = tags?.find((item) => REGEXP.DATE_REGEXP.test(item));
   const _tags = tags?.filter((item) => item !== date);
   
   return {
     ...data,
     ...(_tags && { tags: _tags }),
     ...(date && { date }),
-    updated: getTodayDate(),
+    updated: toIsoDateWithTimezone(new Date()),
     sourceHash: getFileHash(str)
   };
-}
-
-
-/**
- *
- */
-function getTodayDate() {
-  const today = new Date();
-  const month = today.getMonth() + 1;
-  return today.getFullYear() + '-' +
-    (month > 9 ? month : '0' + month) + '-' +
-    today.getDate() + ' ' +
-    today.getHours() + ':' +
-    today.getMinutes();
 }
 
 
