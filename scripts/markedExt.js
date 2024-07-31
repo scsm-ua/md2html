@@ -28,14 +28,15 @@ function processFootnotes(text) {
  */
 function processFootnoteLinks(text) {
   if (REGEXP.FOOTNOTE_LINK_REGEXP.test(text)) {
-    const number = REGEXP.FOOTNOTE_LINK_REGEXP.exec(text)[1];
-    return `
-        <div class="Article__foot-link-container" id="ftn-link-${number}">
-          <a class="Article__link" href="#ftn-${number}">
-            [${number}]
-          </a>
-        </div>
-      `;
+    const update = text.replaceAll(
+      REGEXP.FOOTNOTE_LINK_REGEXP,
+      (_, number) =>
+        `<a class="Article__link Article__foot-link" href="#ftn-${number}" id="ftn-link-${number}">
+          [${number}]
+        </a>`
+    );
+    
+    return `<p>${update}</p>`;
   }
   
   return `<p>${text}</p>`;

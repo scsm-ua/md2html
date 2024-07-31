@@ -14,6 +14,7 @@ const DIRS = {
   OUTPUT: PROJECT_ROOT_DIR + '/output',
   JSON_OUTPUT: PROJECT_ROOT_DIR + '/output/json',
   HTML_OUTPUT: PROJECT_ROOT_DIR + '/output/html',
+  TEST_OUTPUT: PROJECT_ROOT_DIR + '/output/test',
   STYLES: PROJECT_ROOT_DIR + '/styles'
 };
 
@@ -25,14 +26,18 @@ const FILES = {
   },
   COLLECTIONS: {
     POSTS: 'posts.json'
+  },
+  STYLES: {
+    CSS: 'styles.css'
   }
 };
 
 /**/
 const REGEXP = {
   DATE_REGEXP: /^([1-2]\d{3})[.-]([01]\d)([.-]([0-3]\d))?$/,
-  FOOTNOTE_REGEXP: /\[\^_ftn(\d+)]:/, // Footnote [^_ftn1234]:
-  FOOTNOTE_LINK_REGEXP: /\[\^_ftn(\d+)]/ // Footnote link [^_ftn1234]
+  FOOTNOTE_REGEXP: /^\[\^_ftn(\d+)]:/, // Footnote [^_ftn1234]:
+  FOOTNOTE_LINK_REGEXP: /\[\^_ftn(\d+)]/g, // Footnote link [^_ftn1234]
+  FOOTNOTES_BEGINNING_REGEXP: /\n\[\^_ftn(\d+)]:/
 };
 
 /**/

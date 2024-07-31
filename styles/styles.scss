@@ -92,9 +92,13 @@ em[data-type="time"] {
     }
   }
   
-  &__foot-link-container {
-    padding-left: var(--verse-left-margin);
-    margin-bottom: 20px;
+  &__foot-link {
+    
+    &:first-child {
+      display: block;
+      padding-left: var(--verse-left-margin);
+      margin: -12px 0 24px;
+    }
   }
   
   &__footnotes {

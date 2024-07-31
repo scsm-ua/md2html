@@ -41,7 +41,7 @@ function md2html(str, dictionaries, isProdMode) {
     .filter(Boolean)
     .map((s) => s.trim());
   
-  const notesStart = _text.search(REGEXP.FOOTNOTE_REGEXP);
+  const notesStart = _text.search(REGEXP.FOOTNOTES_BEGINNING_REGEXP);
   const notes = _text.slice(notesStart);
   const text = _text.slice(0, notesStart).trimEnd();
   
