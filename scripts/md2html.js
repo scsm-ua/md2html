@@ -1,4 +1,3 @@
-const crypto = require('crypto');
 const { Marked } = require('marked');
 const { Transform } = require('stream');
 const yaml = require('yaml');
@@ -6,7 +5,7 @@ const yaml = require('yaml');
 const { createHtmlOutput, createJsonOutput } = require('./output');
 const { footnotesRenderer, textRenderer } = require('./markedExt');
 const { REGEXP } = require('./const');
-const { toIsoDateWithTimezone, validateMeta } = require('./helpers');
+const { toIsoDateWithTimezone, validateMeta, getFileHash } = require('./helpers');
 
 /**/
 const footnotesParser = new Marked({ renderer: footnotesRenderer });
@@ -65,28 +64,20 @@ function md2html(str, dictionaries, isProdMode) {
 /**
  *
  */
-function processMeta({ tags, ...data }, str) {
+function processMeta({ category, tags, ...data }, str) {
   const date = tags?.find((item) => REGEXP.DATE_REGEXP.test(item));
-  const _tags = tags?.filter((item) => item !== date);
+  const _tags = tags
+    ?.filter((item) => item !== date)
+    .map(({ slug }) => slug);
   
   return {
     ...data,
-    ...(_tags && { tags: _tags }),
+    ...(category && { category: category.slug }),
     ...(date && { date }),
+    ...(_tags && { tags: _tags }),
     updated: toIsoDateWithTimezone(new Date()),
     sourceHash: getFileHash(str)
   };
-}
-
-
-/**
- *
- */
-function getFileHash(str) {
-  const hash = crypto.createHash('sha1').setEncoding('hex');
-  hash.write(str);
-  hash.end();
-  return hash.read();
 }
 
 

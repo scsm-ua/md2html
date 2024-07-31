@@ -1,4 +1,5 @@
 const chalk = require('chalk');
+const crypto = require('crypto');
 const fs = require('fs');
 /**/
 const { DIRS, FILES } = require('./const');
@@ -27,24 +28,24 @@ function getDictionaries() {
  */
 function validateMeta(meta, { categories, tags }) {
   if (!('category' in meta)) {
-    const msg = `Warning: File "${meta.slug}.md" has no category`;
+    const msg = `Warning: NO CATEGORY in file "${meta.slug}.md".`;
     console.warn(chalk.black.bgYellow.bold(msg));
     
   } else if (!categories.includes(meta.category.slug)) {
-    const msg = `File "${meta.slug}.md" has unknown category slug "${meta.category.slug}"!`;
+    const msg = `UNKNOWN CATEGORY "${meta.category.slug}" in file "${meta.slug}.md"!`;
     console.error(chalk.blue.bgRed.bold(msg));
     throw new Error("Encountered unknown category!");
   }
   
   if (!('tags' in meta) || !meta.tags.length) {
-    const msg = `Warning: File "${meta.slug}.md" has no tags`;
+    const msg = `Warning: NO TAGS in file "${meta.slug}.md".`;
     console.warn(chalk.black.bgYellow.bold(msg));
   }
   
   const invalidTag = meta.tags?.find((tag) => !tags.includes(tag.slug));
 
   if (invalidTag) {
-    const msg = `File "${meta.slug}.md" has unknown tag "${invalidTag.slug}"!`;
+    const msg = `UNKNOWN TAG "${invalidTag.slug}" in file "${meta.slug}.md"!`;
     console.error(chalk.blue.bgRed.bold(msg));
     throw new Error("Encountered unknown tag!");
   }
@@ -70,9 +71,21 @@ function toIsoDateWithTimezone(date) {
 }
 
 
+/**
+ *
+ */
+function getFileHash(str) {
+  const hash = crypto.createHash('sha1').setEncoding('hex');
+  hash.write(str);
+  hash.end();
+  return hash.read();
+}
+
+
 /**/
 module.exports = {
   getDictionaries,
+  getFileHash,
   toIsoDateWithTimezone,
   validateMeta
 };
