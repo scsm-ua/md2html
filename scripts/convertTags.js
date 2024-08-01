@@ -1,6 +1,4 @@
 const { Transform } = require('stream');
-/**/
-const { getFileHash, toIsoDateWithTimezone } = require('./helpers');
 
 /**
  *
@@ -32,11 +30,7 @@ function convert(str) {
   const items = Object.entries(JSON.parse(str))
     .map(([slug, name]) => ({ name, slug }));
   
-  return JSON.stringify({
-    updated: toIsoDateWithTimezone(new Date()),
-    sourceHash: getFileHash(str),
-    items: items
-  }, null, 4);
+  return JSON.stringify(items, null, 4);
 }
 
 /**/

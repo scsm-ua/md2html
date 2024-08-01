@@ -1,5 +1,4 @@
 const gulp = require('gulp');
-const htmlvalidate = require('gulp-html-validate');
 const jsoncombinearray = require('gulp-jsoncombine-array');
 const rename = require('gulp-rename');
 const sass = require('gulp-sass')(require('sass'));
@@ -80,17 +79,6 @@ gulp.task('build-tags', () => {
 /**
  *
  */
-gulp.task('validate-html', () => {
-  return gulp
-    .src(DIRS.HTML_OUTPUT + '/**/*.html')
-    .pipe(htmlvalidate())
-    .pipe(htmlvalidate.format());
-});
-
-
-/**
- *
- */
 gulp.task('update-source', shell.task('yarn upgrade archive'));
 
 /**
@@ -119,7 +107,7 @@ gulp.task(
 /**/
 gulp.task(
   'build-html',
-  gulp.series('clean-html', gulp.parallel('md2html-html', 'sass'), 'validate-html')
+  gulp.series('clean-html', 'md2html-html', 'sass')
 );
 
 /**/

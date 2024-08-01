@@ -4,7 +4,7 @@
   'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
   'Noto Color Emoji';
   
-  --verse-left-margin: 24px;
+  --verse-left-padding: 24px;
 }
 
 body {
@@ -70,7 +70,7 @@ em[data-type="time"] {
   pre {
     width: fit-content;
     margin: 16px 0 0;
-    padding: 4px 4px 4px var(--verse-left-margin);
+    padding: 4px 4px 4px var(--verse-left-padding);
     word-break: break-all;
     word-wrap: break-word;
   }
@@ -96,13 +96,14 @@ em[data-type="time"] {
     
     &:first-child {
       display: block;
-      padding-left: var(--verse-left-margin);
+      padding-left: var(--verse-left-padding);
       margin: -12px 0 24px;
     }
   }
   
   &__footnotes {
     margin-top: 80px;
+    border-top: solid 1px gray;
   }
   
   &__footnote {
