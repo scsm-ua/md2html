@@ -81,13 +81,15 @@ function processFtn(notes, slug) {
  *
  */
 function processMeta({ category, tags, ...data }, str) {
-  const date = tags?.find((item) => REGEXP.DATE_REGEXP.test(item));
+  const audio = data.links?.find(({ href }) => href.trimEnd().endsWith('.mp3'));
+  const date = tags?.find((item) => REGEXP.DATE_REGEXP.test(item.slug));
   const _tags = tags
     ?.filter((item) => item !== date)
     .map(({ slug }) => slug);
   
   return {
     ...data,
+    ...(audio && { audio }),
     ...(category && { category: category.slug }),
     ...(date && { date }),
     ...(_tags && { tags: _tags }),

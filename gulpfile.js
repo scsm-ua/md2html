@@ -49,12 +49,12 @@ gulp.task('html-single', () => {
       [
         '/04-vrindavan-zhit-odnoy-semyey-s-bogom' +
         '/041_1982-01-19-b1_sridharmj_zemlya_samopojertvovaniya.md',
-        '/07-lichnost-i-dar-chaitanyi-v-poezii-vaishnavov' +
-        '/119-1982-05-09-b2-dlya-mahaprabhu-kazhdyj-holm-byl-govardhanom-a-kazhdyj-les-vrindavanom.md',
-        '/14-kak-poznat-i-uvidet-boga' +
-        '/204-1982-03-30-b2-krishnu-mozhet-prinyat-lish-tot-kto-svoboden-ot-zavisti.md',
-        '/64-shrila-sridhar-maharaj-o-svoey-biografii-lichnosti-i-duhovnom-opyte' +
-        '/992-1981-03-12-a1-bog-pomogaet-iskrennim-iskatelyam-istiny-o-miltone-i-vordsvorte.md'
+        // '/07-lichnost-i-dar-chaitanyi-v-poezii-vaishnavov' +
+        // '/119-1982-05-09-b2-dlya-mahaprabhu-kazhdyj-holm-byl-govardhanom-a-kazhdyj-les-vrindavanom.md',
+        // '/14-kak-poznat-i-uvidet-boga' +
+        // '/204-1982-03-30-b2-krishnu-mozhet-prinyat-lish-tot-kto-svoboden-ot-zavisti.md',
+        // '/64-shrila-sridhar-maharaj-o-svoey-biografii-lichnosti-i-duhovnom-opyte' +
+        // '/992-1981-03-12-a1-bog-pomogaet-iskrennim-iskatelyam-istiny-o-miltone-i-vordsvorte.md'
       ].map((path) => DIRS.INPUT + path)
     )
     .pipe(convertFiles(getDictionaries()))
