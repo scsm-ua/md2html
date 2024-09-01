@@ -92,14 +92,14 @@ em[data-type="time"] {
     }
   }
   
-  &__foot-link {
-    
-    &:first-child {
-      display: block;
-      padding-left: var(--verse-left-padding);
-      margin: -12px 0 24px;
-    }
-  }
+  //&__foot-link {
+  //
+  //  &:first-child {
+  //    //display: block;
+  //    padding-left: var(--verse-left-padding);
+  //    margin: -12px 0 24px;
+  //  }
+  //}
   
   &__footnotes {
     margin-top: 80px;
@@ -108,5 +108,20 @@ em[data-type="time"] {
   
   &__footnote {
     margin: 30px 0;
+  }
+  
+  &__verse {}
+  
+  &__verse-wrapper {
+    display: flex;
+    align-items: end;
+  }
+  
+  &__verse-ref {
+    margin: 0 0 6px 6px;
+    
+    a {
+      padding: 6px;
+    }
   }
 }

@@ -4,14 +4,21 @@ const { Transform } = require('stream');
 const yaml = require('yaml');
 /**/
 const { createHtmlOutput, createJsonOutput } = require('./output');
-const { footnotesRenderer, textRenderer } = require('./markedExt');
+const { footnotesRenderer, preprocessText, postprocessText, textRenderer } = require('./markedExt');
 const { REGEXP } = require('./const');
 const { toIsoDateWithTimezone, getFileHash } = require('./helpers');
 const { validateFtn, validateMeta, validateText } = require('./validation');
 
 /**/
 const footnotesParser = new Marked({ renderer: footnotesRenderer });
-const textParser = new Marked({ renderer: textRenderer });
+
+const textParser = new Marked({
+  hooks: {
+    preprocess: preprocessText,
+    postprocess: postprocessText
+  },
+  renderer: textRenderer
+});
 
 
 /**/
@@ -44,12 +51,12 @@ function md2html(str, dictionaries, isProdMode) {
     .map((s) => s.trim());
   
   const notesStart = _text.search(REGEXP.FOOTNOTES_BEGINNING_REGEXP);
-  const notes = _text.slice(notesStart);
-  const text = _text.slice(0, notesStart).trimEnd();
+  const notes = notesStart < 0 ? '' : _text.slice(notesStart);
+  const text = notesStart < 0 ? _text : _text.slice(0, notesStart).trimEnd();
   
   const _meta = yaml.parse(meta);
   const parsedText = format(textParser.parse(text));
-  const parsedFtn = processFtn(notes, _meta.slug);
+  const parsedFtn = notesStart < 0 ? '' : processFtn(notes, _meta.slug);
   
   validateMeta(_meta, dictionaries);
   validateText(parsedText, _meta.slug);
@@ -84,8 +91,8 @@ function processMeta({ category, tags, ...data }, str) {
   const audio = data.links?.find(({ href }) => href.trimEnd().endsWith('.mp3'));
   const date = tags?.find((item) => REGEXP.DATE_REGEXP.test(item.slug));
   const _tags = tags
-    ?.filter((item) => item !== date)
-    .map(({ slug }) => slug);
+    // ?.filter((item) => item !== date)
+    ?.map(({ slug }) => slug);
   
   return {
     ...data,

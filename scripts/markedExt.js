@@ -1,5 +1,8 @@
 const { REGEXP } = require('./const');
 
+/**/
+const TEMPORARY_INSERT = '@#@';
+
 /**
  * Footnote custom renderer.
  */
@@ -66,12 +69,69 @@ function markTimeStamps(text) {
 }
 
 
+/**
+ *
+ */
+function preprocessText(markdown) {
+  return markdown.replaceAll(REGEXP.VERSE_FOOTNOTE_REGEXP, (match) =>
+    match.replace('\n', ' ') + '\r' + TEMPORARY_INSERT
+  );
+}
+
+
+/**
+ *
+ */
+function postprocessText(html) {
+  return html.replaceAll(`<p>${TEMPORARY_INSERT}</p>`, '');
+}
+
+/**
+ *
+ */
+function processVerse(text) {
+  const ftnPosition = text.search(REGEXP.FOOTNOTE_LINK_REGEXP);
+  
+  if (ftnPosition < 0) return `
+    <div class="Article__verse">
+      <pre><code>${text}</code></pre>
+    </div>
+  `;
+  
+  const verse = text.slice(0, ftnPosition).trimEnd();
+  const ftn = text.slice(ftnPosition);
+  let ftnNumber;
+  
+  const anchor = ftn.replaceAll(REGEXP.FOOTNOTE_LINK_REGEXP, (_, number) => {
+    ftnNumber = number;
+    return `
+      <a class="Article__link Article__foot-link" href="#ftn-${number}">
+        [${number}]
+      </a>
+    `;
+  });
+  
+  return `
+    <div class="Article__verse-wrapper" id="ftn-link-${ftnNumber}">
+      <div class="Article__verse">
+        <pre><code>${verse}</code></pre>
+      </div>
+      
+      <div class="Article__verse-ref">${anchor}</div>
+    </div>
+  `;
+}
+
+
 /**/
 module.exports = {
   footnotesRenderer: {
     paragraph: processFootnotes
   },
+  preprocessText,
+  postprocessText,
   textRenderer: {
+    code: processVerse,
     em: markTimeStamps,
     heading: ignoreTitle,
     paragraph: processFootnoteLinks
