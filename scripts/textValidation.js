@@ -99,6 +99,7 @@ function validateHtml(str, part, slug) {
 /**/
 module.exports = {
   validateFtn,
+  validateHtml,
   validateMeta,
   validateText
 };

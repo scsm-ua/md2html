@@ -4,7 +4,8 @@ const rename = require('gulp-rename');
 const sass = require('gulp-sass')(require('sass'));
 const shell = require('gulp-shell');
 /**/
-const { convertFiles } = require('./scripts/md2html');
+const { convertFtnFiles } = require('./scripts/footnotes2html');
+const { convertTextFiles } = require('./scripts/text2html');
 const { convertTags } = require('./scripts/convertTags');
 const { DIRS, FILES } = require('./scripts/const');
 const { getDictionaries } = require('./scripts/helpers');
@@ -12,10 +13,10 @@ const { getDictionaries } = require('./scripts/helpers');
 /**
  *
  */
-gulp.task('md2html-json', () => {
+gulp.task('text-json', () => {
   return gulp
     .src(DIRS.INPUT + '/**/*.md')
-    .pipe(convertFiles(getDictionaries(), true))
+    .pipe(convertTextFiles(getDictionaries(), true))
     .pipe(
       rename({ extname: '.json' })
     )
@@ -29,10 +30,40 @@ gulp.task('md2html-json', () => {
 /**
  *
  */
-gulp.task('md2html-html', () => {
+gulp.task('text-html', () => {
   return gulp
     .src(DIRS.INPUT + '/**/*.md')
-    .pipe(convertFiles(getDictionaries()))
+    .pipe(convertTextFiles(getDictionaries()))
+    .pipe(
+      rename({ extname: '.html' })
+    )
+    .pipe(gulp.dest(DIRS.HTML_OUTPUT));
+});
+
+
+/**
+ *
+ */
+gulp.task('ftn-json', () => {
+  return gulp
+    .src(DIRS.TEMP_INPUT + '/**/*.md')
+    .pipe(convertFtnFiles(true))
+    .pipe(
+      rename({ extname: '.json' })
+    )
+    .pipe(jsoncombinearray(FILES.COLLECTIONS.FOOTNOTES, (dataArray) =>
+      Buffer.from(JSON.stringify(dataArray, null, 4))
+    ))
+    .pipe(gulp.dest(DIRS.JSON_OUTPUT));
+});
+
+/**
+ *
+ */
+gulp.task('ftn-html', () => {
+  return gulp
+    .src(DIRS.TEMP_INPUT + '/**/*.md')
+    .pipe(convertFtnFiles())
     .pipe(
       rename({ extname: '.html' })
     )
@@ -59,7 +90,7 @@ gulp.task('html-single', () => {
         // '/75-poeziya-shrily-b-r-sridhara-maharaja-v-ispolnenii-shrily-b-s-govindy-maharaja/1145-shri-shri-dajita-dasa-dashakam.md'
       ].map((path) => DIRS.INPUT + path)
     )
-    .pipe(convertFiles(getDictionaries()))
+    .pipe(convertTextFiles(getDictionaries()))
     .pipe(
       rename({ extname: '.html' })
     )
@@ -103,13 +134,13 @@ gulp.task('sass', () => {
  */
 gulp.task(
   'build-json',
-  gulp.series('clean-json', 'md2html-json', 'build-tags')
+  gulp.series('clean-json', 'text-json', 'build-tags')
 );
 
 /**/
 gulp.task(
   'build-html',
-  gulp.series('clean-html', 'md2html-html', 'sass')
+  gulp.series('clean-html', 'text-html', 'sass')
 );
 
 /**/

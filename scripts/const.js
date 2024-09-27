@@ -13,6 +13,7 @@ const DIRS = {
   OUTPUT: PROJECT_ROOT_DIR + '/output',
   JSON_OUTPUT: PROJECT_ROOT_DIR + '/output/json',
   HTML_OUTPUT: PROJECT_ROOT_DIR + '/output/html',
+  TEMP_INPUT: PROJECT_ROOT_DIR + '/test',
   TEST_OUTPUT: PROJECT_ROOT_DIR + '/output/test',
   STYLES: PROJECT_ROOT_DIR + '/styles'
 };
@@ -24,6 +25,7 @@ const FILES = {
     TAGS: 'tags.json'
   },
   COLLECTIONS: {
+    FOOTNOTES: 'footnotes.json',
     POSTS: 'posts.json'
   },
   STYLES: {

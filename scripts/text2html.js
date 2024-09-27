@@ -7,7 +7,7 @@ const { createHtmlOutput, createJsonOutput } = require('./output');
 const { footnotesRenderer, preprocessText, postprocessText, textRenderer } = require('./markedExt');
 const { REGEXP } = require('./const');
 const { toIsoDateWithTimezone, getFileHash } = require('./helpers');
-const { validateFtn, validateMeta, validateText } = require('./validation');
+const { validateFtn, validateMeta, validateText } = require('./textValidation');
 
 /**/
 const footnotesParser = new Marked({ renderer: footnotesRenderer });
@@ -22,14 +22,14 @@ const textParser = new Marked({
 
 
 /**/
-function convertFiles(dictionaries, isProdMode) {
+function convertTextFiles(dictionaries, isProdMode) {
   return new Transform({
     objectMode: true,
     
     transform(file, encoding, callback) {
       try {
         file.contents = Buffer.from(
-          md2html(file.contents.toString(), dictionaries, isProdMode)
+          text2html(file.contents.toString(), dictionaries, isProdMode)
         );
         this.push(file);
         callback();
@@ -45,7 +45,7 @@ function convertFiles(dictionaries, isProdMode) {
 /**
  *
  */
-function md2html(str, dictionaries, isProdMode) {
+function text2html(str, dictionaries, isProdMode) {
   const [meta, _text] = str.split('---\n')
     .filter(Boolean)
     .map((s) => s.trim());
@@ -108,5 +108,5 @@ function processMeta({ category, tags, ...data }, str) {
 
 /**/
 module.exports = {
-  convertFiles
+  convertTextFiles
 };

@@ -150,7 +150,7 @@ append-buffer@^1.0.2:
 
 archive@scsm-ua/sridhar-maharaj-archive#main:
   version "0.0.0"
-  resolved "https://codeload.github.com/scsm-ua/sridhar-maharaj-archive/tar.gz/9295b3619454850a776f88bf4e347d52b6a90bd3"
+  resolved "https://codeload.github.com/scsm-ua/sridhar-maharaj-archive/tar.gz/18eb33aee7efff86fdeb2bcfbb49ec8a7bb3f4b1"
 
 archy@^1.0.0:
   version "1.0.0"
