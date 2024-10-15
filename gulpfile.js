@@ -74,27 +74,28 @@ gulp.task('ftn-html', () => {
 /**
  *
  */
-gulp.task('html-single', () => {
+gulp.task('test-html', () => {
   return gulp
     .src(
       [
-        '/04-vrindavan-zhit-odnoy-semyey-s-bogom' +
-        '/041_1982-01-19-b1_sridharmj_zemlya_samopojertvovaniya.md',
-        '/07-lichnost-i-dar-chaitanyi-v-poezii-vaishnavov' +
-        '/119-1982-05-09-b2-dlya-mahaprabhu-kazhdyj-holm-byl-govardhanom-a-kazhdyj-les-vrindavanom.md',
-        '/14-kak-poznat-i-uvidet-boga' +
-        '/204-1982-03-30-b2-krishnu-mozhet-prinyat-lish-tot-kto-svoboden-ot-zavisti.md',
-        '/64-shrila-sridhar-maharaj-o-svoey-biografii-lichnosti-i-duhovnom-opyte' +
-        '/992-1981-03-12-a1-bog-pomogaet-iskrennim-iskatelyam-istiny-o-miltone-i-vordsvorte.md',
-        '/71-o-vazhnosti-rasprostraneniya-ucheniya-shrily-sridhara-maharaja/1134-1982-07-02-a4-shrila-shridhar-maharadzh-delaet-sokrovennye-istiny-o-soznanii-krishny-bolee-otchetlivymi.md'
+        // '/04-vrindavan-zhit-odnoy-semyey-s-bogom' +
+        // '/041_1982-01-19-b1_sridharmj_zemlya_samopojertvovaniya.md',
+        // '/07-lichnost-i-dar-chaitanyi-v-poezii-vaishnavov' +
+        // '/119-1982-05-09-b2-dlya-mahaprabhu-kazhdyj-holm-byl-govardhanom-a-kazhdyj-les-vrindavanom.md',
+        // '/14-kak-poznat-i-uvidet-boga' +
+        // '/204-1982-03-30-b2-krishnu-mozhet-prinyat-lish-tot-kto-svoboden-ot-zavisti.md',
+        // '/64-shrila-sridhar-maharaj-o-svoey-biografii-lichnosti-i-duhovnom-opyte' +
+        // '/992-1981-03-12-a1-bog-pomogaet-iskrennim-iskatelyam-istiny-o-miltone-i-vordsvorte.md',
+        // '/71-o-vazhnosti-rasprostraneniya-ucheniya-shrily-sridhara-maharaja' +
+        '/1134-1982-07-02-a4-shrila-shridhar-maharadzh-delaet-sokrovennye-istiny-o-soznanii-krishny-bolee-otchetlivymi.md'
         // '/75-poeziya-shrily-b-r-sridhara-maharaja-v-ispolnenii-shrily-b-s-govindy-maharaja/1145-shri-shri-dajita-dasa-dashakam.md'
-      ].map((path) => DIRS.INPUT.ROOT + path)
+      ].map((path) => /*DIRS.INPUT.ROOT*/ DIRS.INPUT.TEST + path)
     )
     .pipe(convertTextFiles(getDictionaries()))
     .pipe(
       rename({ extname: '.html' })
     )
-    .pipe(gulp.dest(DIRS.OUTPUT.TEST));
+    .pipe(gulp.dest(DIRS.INPUT.TEST));
 });
 
 
@@ -147,7 +148,7 @@ gulp.task(
 gulp.task(
   'html-test',
   gulp.series(
-    gulp.parallel('sass', 'html-single'),
+    gulp.parallel('sass', 'test-html'),
     shell.task(
       `cp ${DIRS.OUTPUT.HTML.ROOT}/${FILES.STYLES.CSS} ${DIRS.OUTPUT.ROOT}`
     )

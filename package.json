@@ -4,6 +4,7 @@
   "scripts": {
     "build:html": "gulp build-html",
     "build:json": "gulp build-json",
+    "test:html": "gulp test-html",
     "update-source": "gulp update-source"
   },
   "dependencies": {

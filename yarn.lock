@@ -150,7 +150,7 @@ append-buffer@^1.0.2:
 
 archive@scsm-ua/sridhar-maharaj-archive#refactor-footnotes-links:
   version "0.0.0"
-  resolved "https://codeload.github.com/scsm-ua/sridhar-maharaj-archive/tar.gz/6d41490cff7da3bc4bffdb9ec08d686bee3ca04f"
+  resolved "https://codeload.github.com/scsm-ua/sridhar-maharaj-archive/tar.gz/a2032993c05fc60341feeec6ca76d6c9f1e3f676"
 
 archy@^1.0.0:
   version "1.0.0"

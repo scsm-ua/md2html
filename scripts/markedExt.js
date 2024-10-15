@@ -10,16 +10,19 @@ function processFootnotes(text) {
   if (REGEXP.FOOTNOTE_REGEXP.test(text.slice(0, 12))) {
     const number = REGEXP.FOOTNOTE_REGEXP.exec(text.slice(0, 12))[1];
     const ftn = `
-        <a class="Article__link" href="#ftn-link-${number}">
-          [${number}]
-        </a>
-      `;
+      <a class="Article__link" href="#ftn-link-${number}">
+        [${number}]
+      </a>
+    `;
+    
+    const _text = text.replace(REGEXP.FOOTNOTE_REGEXP, ftn)
+      .replace('.md"', '.html"');
     
     return `
-        <p class="Article__footnote" id="ftn-${number}">
-          ${text.replace(REGEXP.FOOTNOTE_REGEXP, ftn)}
-        </p>
-      `;
+      <p class="Article__footnote" id="ftn-${number}">
+        ${_text}
+      </p>
+    `;
   }
   
   return `<p>${text}</p>`;
