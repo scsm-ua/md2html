@@ -7,7 +7,7 @@ const shell = require('gulp-shell');
 const { convertFtnFiles } = require('./scripts/footnotes2html');
 const { convertTextFiles } = require('./scripts/text2html');
 const { convertTags } = require('./scripts/convertTags');
-const { DIRS, FILES } = require('./scripts/const');
+const { DIRS, FILES, GLOBS } = require('./scripts/const');
 const { getDictionaries } = require('./scripts/helpers');
 
 /**
@@ -15,7 +15,7 @@ const { getDictionaries } = require('./scripts/helpers');
  */
 gulp.task('text-json', () => {
   return gulp
-    .src(DIRS.INPUT + '/**/*.md')
+    .src(GLOBS.POSTS.INPUT)
     .pipe(convertTextFiles(getDictionaries(), true))
     .pipe(
       rename({ extname: '.json' })
@@ -23,7 +23,7 @@ gulp.task('text-json', () => {
     .pipe(jsoncombinearray(FILES.COLLECTIONS.POSTS, (dataArray) =>
       Buffer.from(JSON.stringify(dataArray, null, 4))
     ))
-    .pipe(gulp.dest(DIRS.JSON_OUTPUT));
+    .pipe(gulp.dest(DIRS.OUTPUT.JSON));
 });
 
 
@@ -32,12 +32,12 @@ gulp.task('text-json', () => {
  */
 gulp.task('text-html', () => {
   return gulp
-    .src(DIRS.INPUT + '/**/*.md')
+    .src(GLOBS.POSTS.INPUT)
     .pipe(convertTextFiles(getDictionaries()))
     .pipe(
       rename({ extname: '.html' })
     )
-    .pipe(gulp.dest(DIRS.HTML_OUTPUT));
+    .pipe(gulp.dest(DIRS.OUTPUT.HTML.ROOT));
 });
 
 
@@ -46,7 +46,7 @@ gulp.task('text-html', () => {
  */
 gulp.task('ftn-json', () => {
   return gulp
-    .src(DIRS.TEMP_INPUT + '/**/*.md')
+    .src(GLOBS.NOTES.INPUT)
     .pipe(convertFtnFiles(true))
     .pipe(
       rename({ extname: '.json' })
@@ -54,7 +54,7 @@ gulp.task('ftn-json', () => {
     .pipe(jsoncombinearray(FILES.COLLECTIONS.FOOTNOTES, (dataArray) =>
       Buffer.from(JSON.stringify(dataArray, null, 4))
     ))
-    .pipe(gulp.dest(DIRS.JSON_OUTPUT));
+    .pipe(gulp.dest(DIRS.OUTPUT.JSON));
 });
 
 /**
@@ -62,12 +62,12 @@ gulp.task('ftn-json', () => {
  */
 gulp.task('ftn-html', () => {
   return gulp
-    .src(DIRS.TEMP_INPUT + '/**/*.md')
+    .src(GLOBS.NOTES.INPUT)
     .pipe(convertFtnFiles())
     .pipe(
       rename({ extname: '.html' })
     )
-    .pipe(gulp.dest(DIRS.HTML_OUTPUT));
+    .pipe(gulp.dest(DIRS.OUTPUT.HTML.NOTES));
 });
 
 
@@ -88,13 +88,13 @@ gulp.task('html-single', () => {
         '/992-1981-03-12-a1-bog-pomogaet-iskrennim-iskatelyam-istiny-o-miltone-i-vordsvorte.md',
         '/71-o-vazhnosti-rasprostraneniya-ucheniya-shrily-sridhara-maharaja/1134-1982-07-02-a4-shrila-shridhar-maharadzh-delaet-sokrovennye-istiny-o-soznanii-krishny-bolee-otchetlivymi.md'
         // '/75-poeziya-shrily-b-r-sridhara-maharaja-v-ispolnenii-shrily-b-s-govindy-maharaja/1145-shri-shri-dajita-dasa-dashakam.md'
-      ].map((path) => DIRS.INPUT + path)
+      ].map((path) => DIRS.INPUT.ROOT + path)
     )
     .pipe(convertTextFiles(getDictionaries()))
     .pipe(
       rename({ extname: '.html' })
     )
-    .pipe(gulp.dest(DIRS.TEST_OUTPUT));
+    .pipe(gulp.dest(DIRS.OUTPUT.TEST));
 });
 
 
@@ -103,9 +103,9 @@ gulp.task('html-single', () => {
  */
 gulp.task('build-tags', () => {
   return gulp
-    .src(DIRS.ARCHIVE + '/**/*.json')
+    .src(GLOBS.JSON.INPUT)
     .pipe(convertTags())
-    .pipe(gulp.dest(DIRS.JSON_OUTPUT));
+    .pipe(gulp.dest(DIRS.OUTPUT.JSON));
 });
 
 
@@ -117,15 +117,15 @@ gulp.task('update-source', shell.task('yarn upgrade archive'));
 /**
  *
  */
-gulp.task('clean-json', shell.task('rm -rf ' + DIRS.JSON_OUTPUT));
-gulp.task('clean-html', shell.task('rm -rf ' + DIRS.HTML_OUTPUT));
+gulp.task('clean-json', shell.task('rm -rf ' + DIRS.OUTPUT.JSON));
+gulp.task('clean-html', shell.task('rm -rf ' + DIRS.OUTPUT.HTML.ROOT));
 
 /**/
 gulp.task('sass', () => {
   return gulp
     .src(DIRS.STYLES + '/**/*.scss')
     .pipe(sass().on('error', sass.logError))
-    .pipe(gulp.dest(DIRS.HTML_OUTPUT));
+    .pipe(gulp.dest(DIRS.OUTPUT.HTML.ROOT));
 });
 
 
@@ -134,13 +134,13 @@ gulp.task('sass', () => {
  */
 gulp.task(
   'build-json',
-  gulp.series('clean-json', 'text-json', 'build-tags')
+  gulp.series('clean-json', 'text-json', 'ftn-json', 'build-tags')
 );
 
 /**/
 gulp.task(
   'build-html',
-  gulp.series('clean-html', 'text-html', 'sass')
+  gulp.series('clean-html', 'text-html', 'ftn-html', 'sass')
 );
 
 /**/
@@ -149,7 +149,7 @@ gulp.task(
   gulp.series(
     gulp.parallel('sass', 'html-single'),
     shell.task(
-      `cp ${DIRS.HTML_OUTPUT}/${FILES.STYLES.CSS} ${DIRS.OUTPUT}`
+      `cp ${DIRS.OUTPUT.HTML.ROOT}/${FILES.STYLES.CSS} ${DIRS.OUTPUT.ROOT}`
     )
   )
 );

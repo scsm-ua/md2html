@@ -148,9 +148,9 @@ append-buffer@^1.0.2:
   dependencies:
     buffer-equal "^1.0.0"
 
-archive@scsm-ua/sridhar-maharaj-archive#main:
+archive@scsm-ua/sridhar-maharaj-archive#refactor-footnotes-links:
   version "0.0.0"
-  resolved "https://codeload.github.com/scsm-ua/sridhar-maharaj-archive/tar.gz/18eb33aee7efff86fdeb2bcfbb49ec8a7bb3f4b1"
+  resolved "https://codeload.github.com/scsm-ua/sridhar-maharaj-archive/tar.gz/6d41490cff7da3bc4bffdb9ec08d686bee3ca04f"
 
 archy@^1.0.0:
   version "1.0.0"

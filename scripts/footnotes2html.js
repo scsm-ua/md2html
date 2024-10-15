@@ -44,7 +44,6 @@ function ftn2html(str, isProdMode) {
   validateMeta(_meta);
   validateHtml(parsedText, 'FOOTNOTE FILE', meta.slug);
   
-  console.log(text, '\n\n', parsedText);
   const args = {
     meta: _meta,
     text: parsedText

@@ -9,12 +9,19 @@ const PATH = {
 /**/
 const DIRS = {
   ARCHIVE: PROJECT_ROOT_DIR + PATH.ARCHIVE_PATH,
-  INPUT: PROJECT_ROOT_DIR + PATH.ARCHIVE_PATH + '/ru',
-  OUTPUT: PROJECT_ROOT_DIR + '/output',
-  JSON_OUTPUT: PROJECT_ROOT_DIR + '/output/json',
-  HTML_OUTPUT: PROJECT_ROOT_DIR + '/output/html',
-  TEMP_INPUT: PROJECT_ROOT_DIR + '/test',
-  TEST_OUTPUT: PROJECT_ROOT_DIR + '/output/test',
+  INPUT: {
+    ROOT: PROJECT_ROOT_DIR + PATH.ARCHIVE_PATH + '/ru',
+    TEST: PROJECT_ROOT_DIR + '/test',
+  },
+  OUTPUT: {
+    HTML: {
+      NOTES: PROJECT_ROOT_DIR + '/output/html/notes',
+      ROOT: PROJECT_ROOT_DIR + '/output/html'
+    },
+    JSON: PROJECT_ROOT_DIR + '/output/json',
+    ROOT: PROJECT_ROOT_DIR + '/output',
+    TEST: PROJECT_ROOT_DIR + '/output/test',
+  },
   STYLES: PROJECT_ROOT_DIR + '/styles'
 };
 
@@ -34,6 +41,19 @@ const FILES = {
 };
 
 /**/
+const GLOBS = {
+  JSON: {
+    INPUT: DIRS.ARCHIVE + '/**/*.json'
+  },
+  NOTES: {
+    INPUT: DIRS.INPUT.ROOT + '/notes/**/*.md'
+  },
+  POSTS: {
+    INPUT: [DIRS.INPUT.ROOT + '/**/*.md', '!' + DIRS.INPUT.ROOT + '/notes/**']
+  }
+};
+
+/**/
 const REGEXP = {
   DATE_REGEXP: /^([1-2]\d{3})[.-]([01]\d)([.-]([0-3]\d))?$/,
   FOOTNOTE_REGEXP: /^\[\^_ftn(\d+)]:/, // Footnote [^_ftn1234]:
@@ -46,6 +66,7 @@ const REGEXP = {
 module.exports = {
   DIRS,
   FILES,
+  GLOBS,
   PATH,
   REGEXP
 }
