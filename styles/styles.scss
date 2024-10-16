@@ -64,10 +64,14 @@ em[data-type="time"] {
 
 /**/
 .Meta {
-  font-size: 12px;
   margin-bottom: 80px;
   
+  summary {
+    font-size: 16px;
+  }
+  
   pre {
+    font-size: 12px;
     white-space: pre-wrap;
     word-wrap: break-word;
   }

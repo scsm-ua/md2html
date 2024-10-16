@@ -68,12 +68,17 @@ function createHtmlOutput({ meta, text }) {
       <link rel="stylesheet" href="../styles.css">
       <!-- For the old articles -->
       <link rel="stylesheet" href="../../styles.css">
+      <!-- For the deep footnotes -->
+      <link rel="stylesheet" href="../../../styles.css">
     </head>
     
     <body>
       <main>
         <div class="Meta">
-          <pre><code>${JSON.stringify(meta, null, 2)}</code></pre>
+          <details>
+            <summary>Meta data</summary>
+            <pre><code>${JSON.stringify(meta, null, 2)}</code></pre>
+          </details>
         </div>
         
         <div class="Footnote">

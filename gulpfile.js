@@ -15,7 +15,7 @@ const { getDictionaries } = require('./scripts/helpers');
  */
 gulp.task('text-json', () => {
   return gulp
-    .src(GLOBS.POSTS.INPUT)
+    .src(GLOBS.POSTS)
     .pipe(convertTextFiles(getDictionaries(), true))
     .pipe(
       rename({ extname: '.json' })
@@ -32,7 +32,7 @@ gulp.task('text-json', () => {
  */
 gulp.task('text-html', () => {
   return gulp
-    .src(GLOBS.POSTS.INPUT)
+    .src(GLOBS.POSTS)
     .pipe(convertTextFiles(getDictionaries()))
     .pipe(
       rename({ extname: '.html' })
@@ -46,7 +46,7 @@ gulp.task('text-html', () => {
  */
 gulp.task('ftn-json', () => {
   return gulp
-    .src(GLOBS.NOTES.INPUT)
+    .src(GLOBS.NOTES)
     .pipe(convertFtnFiles(true))
     .pipe(
       rename({ extname: '.json' })
@@ -62,7 +62,7 @@ gulp.task('ftn-json', () => {
  */
 gulp.task('ftn-html', () => {
   return gulp
-    .src(GLOBS.NOTES.INPUT)
+    .src(GLOBS.NOTES)
     .pipe(convertFtnFiles())
     .pipe(
       rename({ extname: '.html' })
@@ -104,7 +104,7 @@ gulp.task('test-html', () => {
  */
 gulp.task('build-tags', () => {
   return gulp
-    .src(GLOBS.JSON.INPUT)
+    .src(GLOBS.JSON)
     .pipe(convertTags())
     .pipe(gulp.dest(DIRS.OUTPUT.JSON));
 });
@@ -124,9 +124,10 @@ gulp.task('clean-html', shell.task('rm -rf ' + DIRS.OUTPUT.HTML.ROOT));
 /**/
 gulp.task('sass', () => {
   return gulp
-    .src(DIRS.STYLES + '/**/*.scss')
+    .src(GLOBS.SASS)
     .pipe(sass().on('error', sass.logError))
-    .pipe(gulp.dest(DIRS.OUTPUT.HTML.ROOT));
+    .pipe(gulp.dest(DIRS.OUTPUT.HTML.ROOT))
+    .pipe(gulp.dest(DIRS.OUTPUT.ROOT));
 });
 
 

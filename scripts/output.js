@@ -17,7 +17,10 @@ function createHtmlOutput({ footnotes, meta, title, text }) {
     <body>
       <main>
         <div class="Meta">
-          <pre><code>${JSON.stringify(meta, null, 2)}</code></pre>
+          <details>
+            <summary>Meta data</summary>
+            <pre><code>${JSON.stringify(meta, null, 2)}</code></pre>
+          </details>
         </div>
         
         <div class="Article">
