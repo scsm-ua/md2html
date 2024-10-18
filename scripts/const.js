@@ -53,6 +53,7 @@ const REGEXP = {
   DATE_REGEXP: /^([1-2]\d{3})[.-]([01]\d)([.-]([0-3]\d))?$/,
   FOOTNOTE_REGEXP: /^\[\^_ftn(\d+)]:/, // Footnote [^_ftn1234]:
   FOOTNOTE_LINK_REGEXP: /\[\^_ftn(\d+)]/g, // Footnote link [^_ftn1234]
+  FOOTNOTE_PATH: /(\(.+\.md\))$/,
   FOOTNOTES_BEGINNING_REGEXP: /\n\[\^_ftn(\d+)]:/,
   VERSE_FOOTNOTE_REGEXP: /\n\[\^_ftn(\d+)]/g
 };

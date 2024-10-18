@@ -1,5 +1,6 @@
 const format = require('html-format');
 const { Marked } = require('marked');
+const path = require('path');
 const { Transform } = require('stream');
 const yaml = require('yaml');
 /**/
@@ -8,6 +9,7 @@ const { footnotesRenderer, preprocessText, postprocessText, textRenderer } = req
 const { REGEXP } = require('./const');
 const { toIsoDateWithTimezone, getFileHash } = require('./helpers');
 const { validateFtn, validateMeta, validateText } = require('./textValidation');
+const chalk = require('chalk');
 
 /**/
 const footnotesParser = new Marked({ renderer: footnotesRenderer });
@@ -56,7 +58,6 @@ function text2html(str, dictionaries, isProdMode) {
   
   const _meta = yaml.parse(meta);
   const parsedText = format(textParser.parse(text));
-  const parsedFtn = notesStart < 0 ? '' : processFtn(notes, _meta.slug);
   
   validateMeta(_meta, dictionaries);
   validateText(parsedText, _meta.slug);
@@ -65,10 +66,40 @@ function text2html(str, dictionaries, isProdMode) {
     meta: processMeta(_meta, str),
     title: format(text.slice(0, text.indexOf('\n')).replace('#', '')),
     text: parsedText,
-    footnotes: parsedFtn
+    footnotes: isProdMode
+      ? (notesStart < 0 ? null : parseFootnotes(notes, _meta.slug))
+      : (notesStart < 0 ? '' : processFtn(notes, _meta.slug))
   };
   
   return isProdMode ? createJsonOutput(args) : createHtmlOutput(args);
+}
+
+
+/**
+ *
+ */
+function parseFootnotes(notes, postSlug) {
+  return notes
+    .split('\n')
+    .map((note) => {
+      if (!note) return null;
+      const res = REGEXP.FOOTNOTE_PATH.exec(note);
+      
+      if (!res) return null;
+      const slug = path.parse(res[0]).name;
+      
+      if (!res[0] || !slug) {
+        const msg = `CAN'T EXTRACT FOOTNOTE SLUG from "${note}" for source file "${postSlug}.md"!`;
+        console.warn(chalk.blue.bgRed.bold(msg));
+        return null;
+      }
+      
+      return {
+        raw: note,
+        slug: slug
+      };
+    })
+    .filter(Boolean);
 }
 
 
