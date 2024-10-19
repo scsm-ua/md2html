@@ -1,10 +1,26 @@
 const format = require('html-format');
-const { marked } = require('marked');
+const { Marked } = require('marked');
 const { Transform } = require('stream');
 const yaml = require('yaml');
 /**/
 const { validateHtml } = require('./textValidation');
 const { validateMeta } = require('./ftnValidation');
+
+/**
+ *
+ */
+function headingRenderer(text, depth) {
+  const _depth = depth < 4 ? depth + 2 : 6;
+  return `
+    <h${_depth}>
+      ${text}
+    </h${_depth}>
+  `;
+}
+
+const parser = new Marked({
+  renderer: { heading: headingRenderer }
+});
 
 
 /**
@@ -39,7 +55,7 @@ function ftn2html(str, isProdMode) {
     .map((s) => s.trim());
   
   const _meta = yaml.parse(meta);
-  const parsedText = format(marked.parse(text));
+  const parsedText = format(parser.parse(text));
   
   validateMeta(_meta);
   validateHtml(parsedText, 'FOOTNOTE FILE', meta.slug);
