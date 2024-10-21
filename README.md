@@ -39,8 +39,5 @@
 
 ## DB import
 
-mongoimport --uri mongodb://127.0.0.1:27017/sridhar_2  --collection topics --type json --jsonArray --file categories.json
-mongoimport --uri mongodb://127.0.0.1:27017/sridhar_2  --collection footnotes --type json --jsonArray --file footnotes.json
-mongoimport --uri mongodb://127.0.0.1:27017/sridhar_2  --collection posts --type json --jsonArray --file posts.json
-mongoimport --uri mongodb://127.0.0.1:27017/sridhar_2  --collection tags --type json --jsonArray --file tags.json
-mongoimport --uri mongodb://127.0.0.1:27017/sridhar_2  --collection years --type json --jsonArray --file years.json
+cd import
+sh import-collections.sh
