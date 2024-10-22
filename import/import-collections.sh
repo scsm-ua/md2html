@@ -40,4 +40,4 @@ mongosh $DB_NAME --quiet --file mongo-remove-old-data.js
 
 echo ''
 echo '--- Count documents after import ---'
-mongosh $DB_NAME --file mongo-count-all.js
+mongosh $DB_NAME --quiet --file mongo-count-all.js
