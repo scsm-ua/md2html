@@ -8,11 +8,11 @@ echoImport() {
 }
 
 echo '--- Count documents before import ---'
-mongosh $DB_NAME --file mongo-count-all.js
+mongosh $DB_NAME --quiet --file mongo-count-all.js
 
 echo ''
 echo '--- Mark old data ---'
-mongosh $DB_NAME --file mongo-mark-old-data.js
+mongosh $DB_NAME --quiet --file mongo-mark-old-data.js
 
 JSON_PATH=../output/json/categories.json
 echoImport $JSON_PATH
@@ -36,7 +36,7 @@ mongoimport --uri $DB_URI --type json --jsonArray --mode=upsert --file $JSON_PAT
 
 echo ''
 echo '--- Remove old data ---'
-mongosh $DB_NAME --file mongo-remove-old-data.js
+mongosh $DB_NAME --quiet --file mongo-remove-old-data.js
 
 echo ''
 echo '--- Count documents after import ---'
