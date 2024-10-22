@@ -3,7 +3,7 @@ const PROJECT_ROOT_DIR = process.cwd();
 
 /**/
 const PATH = {
-  ARCHIVE_PATH: '/node_modules/archive/docs'
+  ARCHIVE_PATH: '/node_modules/sridhar-maharaj-archive/docs'
 };
 
 /**/
