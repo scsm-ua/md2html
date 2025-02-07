@@ -55,6 +55,7 @@ const REGEXP = {
   FOOTNOTE_LINK_REGEXP: /\[\^_ftn(\d+)]/g, // Footnote link [^_ftn1234]
   FOOTNOTE_PATH: /(\(.+\.md\))$/,
   FOOTNOTES_BEGINNING_REGEXP: /\n\[\^_ftn(\d+)]:/,
+  FULL_DATE_REGEXP: /(19[78]\d\.[01]\d\.[0-3]\d)\.\w/,
   VERSE_FOOTNOTE_REGEXP: /\n\[\^_ftn(\d+)]/g
 };
 

@@ -58,13 +58,14 @@ function text2html(str, dictionaries, isProdMode) {
   
   const _meta = yaml.parse(meta);
   const parsedText = format(textParser.parse(text));
+  const title = format(text.slice(0, text.indexOf('\n')).replace('#', ''));
   
   validateMeta(_meta, dictionaries);
   validateText(parsedText, _meta.slug);
   
   const args = {
-    meta: processMeta(_meta, str),
-    title: format(text.slice(0, text.indexOf('\n')).replace('#', '')),
+    meta: processMeta(_meta, str, extractDate(title, _meta.tags)),
+    title: title,
     text: parsedText,
     footnotes: isProdMode
       ? (notesStart < 0 ? null : parseFootnotes(notes, _meta.slug))
@@ -118,9 +119,8 @@ function processFtn(notes, slug) {
 /**
  *
  */
-function processMeta({ category, tags, ...data }, str) {
+function processMeta({ category, tags, ...data }, str, date) {
   const audio = data.links?.find(({ href }) => href.trimEnd().endsWith('.mp3'));
-  const date = tags?.find((item) => REGEXP.DATE_REGEXP.test(item.slug));
   const _tags = tags
     // ?.filter((item) => item !== date)
     ?.map(({ slug }) => slug);
@@ -129,11 +129,23 @@ function processMeta({ category, tags, ...data }, str) {
     ...data,
     ...(audio && { audio }),
     ...(category && { category: category.slug }),
-    ...(date && { date }),
     ...(_tags && { tags: _tags }),
+    date: date,
     updated: toIsoDateWithTimezone(new Date()),
     sourceHash: getFileHash(str)
   };
+}
+
+
+/**
+ *
+ */
+function extractDate(title, tags) {
+  const res = REGEXP.FULL_DATE_REGEXP.exec(title);
+  if (res[1]) return res[1]; // 1982.01.25
+  
+  const tag = tags?.find((item) => REGEXP.DATE_REGEXP.test(item.title));
+  return tag?.title || null; // 1982.01
 }
 
 
