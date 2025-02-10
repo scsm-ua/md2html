@@ -9,6 +9,7 @@ const { convertTextFiles } = require('./scripts/text2html');
 const { convertTags } = require('./scripts/convertTags');
 const { DIRS, FILES, GLOBS } = require('./scripts/const');
 const { getDictionaries } = require('./scripts/helpers');
+const { sortPostsByDate } = require('./scripts/dateSort');
 
 /**
  *
@@ -21,7 +22,9 @@ gulp.task('text-json', () => {
       rename({ extname: '.json' })
     )
     .pipe(jsoncombinearray(FILES.COLLECTIONS.POSTS, (dataArray) =>
-      Buffer.from(JSON.stringify(dataArray, null, 4))
+      Buffer.from(
+        JSON.stringify(sortPostsByDate(dataArray), null, 4)
+      )
     ))
     .pipe(gulp.dest(DIRS.OUTPUT.JSON));
 });
@@ -87,8 +90,9 @@ gulp.task('test-html', () => {
         // '/64-shrila-sridhar-maharaj-o-svoey-biografii-lichnosti-i-duhovnom-opyte' +
         // '/992-1981-03-12-a1-bog-pomogaet-iskrennim-iskatelyam-istiny-o-miltone-i-vordsvorte.md',
         // '/71-o-vazhnosti-rasprostraneniya-ucheniya-shrily-sridhara-maharaja' +
-        '/1134-1982-07-02-a4-shrila-shridhar-maharadzh-delaet-sokrovennye-istiny-o-soznanii-krishny-bolee-otchetlivymi.md'
+        // '/1134-1982-07-02-a4-shrila-shridhar-maharadzh-delaet-sokrovennye-istiny-o-soznanii-krishny-bolee-otchetlivymi.md'
         // '/75-poeziya-shrily-b-r-sridhara-maharaja-v-ispolnenii-shrily-b-s-govindy-maharaja/1145-shri-shri-dajita-dasa-dashakam.md'
+        '/188-1980-07-11-a7-v-nashih-sladchajshih-pesnyah-poetsya-o-pechali.md'
       ].map((path) => /*DIRS.INPUT.ROOT*/ DIRS.INPUT.TEST + path)
     )
     .pipe(convertTextFiles(getDictionaries()))

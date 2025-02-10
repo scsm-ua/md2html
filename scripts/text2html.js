@@ -142,10 +142,10 @@ function processMeta({ category, tags, ...data }, str, date) {
  */
 function extractDate(title, tags) {
   const res = REGEXP.FULL_DATE_REGEXP.exec(title);
-  if (res && res[1]) return res[1]; // 1982.01.25
+  if (res && res[1]) return res[1].replaceAll('.', '-'); // 1982.01.25 -> 1982-01-25
   
-  const tag = tags?.find((item) => REGEXP.DATE_REGEXP.test(item.title));
-  return tag?.title || null; // 1982.01
+  const tag = tags?.find((item) => REGEXP.DATE_REGEXP.test(item.slug));
+  return tag?.slug || null; // 1982.01
 }
 
 
