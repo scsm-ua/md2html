@@ -6,10 +6,9 @@ const { ARCHIVE_CHRONOLOGY } = require('./const');
 function sortPostsByDate(dataArray) {
   const years = new Map(); // Posts with valid and relevant date. See ARCHIVE_CHRONOLOGY constant.
   const other = new Set(); // Other posts.
-  const posts = [];
   
   // Separates posts by year and year validity.
-  // Weird date cases are: null, '1987.00'.
+  // Weird date cases are those exceeding the known year range and null.
   dataArray.forEach((post) => {
     const { date } = post.meta;
     if (!date) return other.add(post);
@@ -27,60 +26,106 @@ function sortPostsByDate(dataArray) {
     yearRecord.add(post);
   });
   
-  // Sorts posts of each year by date. Posts without day or invalid date are placed in the end of the set.
-  years.forEach((recordSet, year, map) => {
-    const wrongDate = new Set();
-    const records = new Set();
-    // console.log('+++++++', year, recordSet.size); // To check the length of each year.
-    
-    recordSet.forEach((rec) => {
-      const [y, m, d] = rec.meta.date.split('-');
-      const isDateOk = d && !Number.isNaN(Date.parse(rec.meta.date));
-      isDateOk ? records.add(rec) : wrongDate.add(rec);
-    });
-    
-    const arr = Array.from(records);
-    arr.sort((a, b) =>
-      Date.parse(a.meta.date) - Date.parse(b.meta.date)
-    );
-    
-    posts.push([...arr, ...Array.from(wrongDate)]);
-  });
+  const yearArr = Array.from(years)
+    // Sorts by year.
+    // a: [yearString, Set<posts>]; b: [yearString, Set<posts>];
+    .sort((a, b) => a[0] - b[0])
+    .map(precessPostsByYear);
   
-  // In the end of sorted posts we place post of irrelevant dates.
-  posts.push(Array.from(other));
-  // console.log('+++++++', null, other.size); // To check the length of irrelevant.
-  
-  const result = addYearField(posts);
+  return yearArr.flat(2).concat(Array.from(other))
   // result.forEach((post, idx) => {
-  //   console.log(post.meta.date, idx);
+  //   console.log(post.meta.year, post.meta.date, idx);
   // });
-  
-  return result;
 }
 
 
 /**
- * Adds `year` field to each post meta.
+ * @param year { String }
+ * @param posts { Set<post> }
+ * @returns { Array<post> }
  */
-function addYearField(posts) {
-  return posts
-    .flatMap((x) => x)
-    .map((post) => {
-      const [y] = (post.meta?.date || '').split('-');
-      const isYearOk = y && (
-        y <= ARCHIVE_CHRONOLOGY.MAX ||
-        y >= ARCHIVE_CHRONOLOGY.MIN
-      );
-      
-      return {
-        ...post,
-        meta: {
-          ...post.meta,
-          year: isYearOk ? y : null
-        }
-      };
-    });
+function precessPostsByYear([year, posts]) {
+  const aYear = new Map();
+  
+  posts.forEach((post) => {
+    const [y, m, d] = post.meta.date.split('-');
+    
+    const monthRecord = aYear.get(m) || (function() {
+      aYear.set(m, new Set());
+      return aYear.get(m);
+    } ());
+    
+    monthRecord.add(post);
+  });
+  
+  return sortMapOfPosts(aYear);
+}
+
+
+/**
+ * Sorts months and included posts.
+ * @param mapOfMonths { Map<month, Set<post>> }. month ['01'...'12'].
+ * @returns { Array<post> }
+ */
+function sortMapOfPosts(mapOfMonths) {
+  const UNKNOWN_MONTH = '00';
+  const incorrectMonth = Array.from(mapOfMonths.get(UNKNOWN_MONTH) || []);
+  mapOfMonths.delete(UNKNOWN_MONTH);
+  
+  const postsArr = Array.from(mapOfMonths)
+    .sort((a, b) => a[0] - b[0])
+    .map(sortPostsOfMonth);
+  
+  return postsArr.concat(incorrectMonth);
+}
+
+
+/**
+ * Sorts posts by date. Items with incorrect date tail the output.
+ * @param month { String }
+ * @param posts { Set<post> }
+ * @returns { Array<post> }
+ */
+function sortPostsOfMonth([month, posts]) {
+  const correctDate = [];
+  const incorrectDate = [];
+  
+  posts.forEach((post) => {
+    const [y, m, d] = post.meta.date.split('-');
+    if (!d || d === '00') {
+      incorrectDate.push(addYearField(post, y));
+    } else {
+      correctDate.push(addYearField(post, y));
+    }
+  });
+  
+  correctDate.sort((a, b) =>
+    Date.parse(a.meta.date) - Date.parse(b.meta.date)
+  );
+  
+  return correctDate.concat(incorrectDate);
+}
+
+
+/**
+ *
+ * @param post
+ * @param year { String }
+ * @returns {*&{meta: (*&{year: (string|null)})}}
+ */
+function addYearField(post, year) {
+  const isYearOk = year && (
+    year <= ARCHIVE_CHRONOLOGY.MAX ||
+    year >= ARCHIVE_CHRONOLOGY.MIN
+  );
+  
+  return {
+    ...post,
+    meta: {
+      ...post.meta,
+      year: isYearOk ? year : null
+    }
+  };
 }
 
 
