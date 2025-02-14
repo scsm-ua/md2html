@@ -32,10 +32,15 @@ function sortPostsByDate(dataArray) {
     .sort((a, b) => a[0] - b[0])
     .map(precessPostsByYear);
   
-  return yearArr.flat(2).concat(Array.from(other))
+  /*const result =*/
+  return yearArr.flat(2)
+    .concat(Array.from(other))
+    .map(addYearField);
+  
   // result.forEach((post, idx) => {
   //   console.log(post.meta.year, post.meta.date, idx);
   // });
+  // return result;
 }
 
 
@@ -93,9 +98,9 @@ function sortPostsOfMonth([month, posts]) {
   posts.forEach((post) => {
     const [y, m, d] = post.meta.date.split('-');
     if (!d || d === '00') {
-      incorrectDate.push(addYearField(post, y));
+      incorrectDate.push(post);
     } else {
-      correctDate.push(addYearField(post, y));
+      correctDate.push(post);
     }
   });
   
@@ -110,10 +115,11 @@ function sortPostsOfMonth([month, posts]) {
 /**
  *
  * @param post
- * @param year { String }
  * @returns {*&{meta: (*&{year: (string|null)})}}
  */
-function addYearField(post, year) {
+function addYearField(post) {
+  const [year] = (post.meta?.date || '').split('-');
+  
   const isYearOk = year && (
     year <= ARCHIVE_CHRONOLOGY.MAX ||
     year >= ARCHIVE_CHRONOLOGY.MIN
