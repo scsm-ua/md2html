@@ -9,7 +9,7 @@ const { convertTextFiles } = require('./scripts/text2html');
 const { convertTags } = require('./scripts/convertTags');
 const { DIRS, FILES, GLOBS } = require('./scripts/const');
 const { getDictionaries } = require('./scripts/helpers');
-const { sortPostsByDate } = require('./scripts/dateSort');
+const { processPosts } = require('./scripts/dateSort');
 
 /**
  *
@@ -23,7 +23,7 @@ gulp.task('text-json', () => {
     )
     .pipe(jsoncombinearray(FILES.COLLECTIONS.POSTS, (dataArray) =>
       Buffer.from(
-        JSON.stringify(sortPostsByDate(dataArray), null, 4)
+        JSON.stringify(processPosts(dataArray), null, 4)
       )
     ))
     .pipe(gulp.dest(DIRS.OUTPUT.JSON));
