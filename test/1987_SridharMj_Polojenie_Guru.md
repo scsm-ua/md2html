@@ -1,3 +1,10 @@
+---
+author: Шрила Бхакти Ракшак Шридхар Дев-Госвами Махарадж
+date: "1987"
+slug: 1987-polojenie-guru
+audioSrc: /Users/kostya/kostya/projects/md2html/test/Audio_MP3/1987_SridharMj_Polojenie_Guru.mp3
+---
+
 **Шрила Бхакти Ракшак Шридхар Дев-Госвами Махарадж**
 
 **1987_SridharMj_Polojenie_Guru**

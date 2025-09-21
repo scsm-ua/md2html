@@ -37,25 +37,17 @@ function convertDoc() {
  *
  */
 function doc2md(filePath) {
-	// Define file format by its extension.
 	const { ext } = getFileName(filePath);
-	
 	const fileType = ext.slice(1).toLowerCase();
 	
 	const markdown = execSync(
 		`pandoc "${filePath}" -f ${fileType} -t markdown --wrap=none`
 	);
 	
-	
-	
+	const content = createMeta(filePath) + markdown.toString();
 	console.log('Reading file:', filePath);
-	createMeta(filePath);
-
-	// console.log(markdown.toString());
-	//
-	// const markdown = execSync("pandoc -f docx -t markdown", { input: contents });
-	// console.log(markdown.toString());
-	return Buffer.from(markdown.toString(), 'utf-8');
+	console.log(content);
+	return Buffer.from(content, 'utf-8');
 }
 
 /**
@@ -76,13 +68,11 @@ function createMeta(filePath) {
 		})
 	});
 	
-	const meta = '---\n' + dataStr + '---\n';
-	
-	console.log(name, meta);
+	return '---\n' + dataStr + '---\n\n';
 }
 
 /**
- *
+ * Extracts date or at least year.
  * @param fileName
  * @returns {string|null}
  */
