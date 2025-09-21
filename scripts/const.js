@@ -42,7 +42,8 @@ const FILES = {
 
 /**/
 const GLOBS = {
-  JSON: DIRS.ARCHIVE + '/**/*.json',
+	DOCS: DIRS.INPUT.TEST + '/**/*.docx',
+	JSON: DIRS.ARCHIVE + '/**/*.json',
   NOTES: DIRS.INPUT.ROOT + '/notes/**/*.md',
   POSTS: [DIRS.INPUT.ROOT + '/**/*.md', '!' + DIRS.INPUT.ROOT + '/notes/**'],
   SASS: DIRS.STYLES + '/**/*.scss'
@@ -55,11 +56,18 @@ const REGEXP = {
   FOOTNOTE_LINK_REGEXP: /\[\^_ftn(\d+)]/g, // Footnote link [^_ftn1234]
   FOOTNOTE_PATH: /(\(.+\.md\))$/,
   FOOTNOTES_BEGINNING_REGEXP: /\n\[\^_ftn(\d+)]:/,
-  FULL_DATE_REGEXP: /(19[78]\d\.[01]\d\.[0-3]\d)\.\w/,
-  VERSE_FOOTNOTE_REGEXP: /\n\[\^_ftn(\d+)]/g
+  FULL_DATE_REGEXP: /(19[78]\d\.[01]\d\.[0-3]\d)\.?\w/,
+  VERSE_FOOTNOTE_REGEXP: /\n\[\^_ftn(\d+)]/g,
+	RECORD_YEAR_REGEXP: /[1-2]\d{3}/ // /19[78]\d/
 };
 
 /**/
+const AUTHOR = 'Шрила Бхакти Ракшак Шридхар Дев-Госвами Махарадж';
+const AUTHOR_VERSIONS = [
+	'BR.SridharM',
+	'SridharMj'
+];
+
 const ARCHIVE_CHRONOLOGY = {
   MAX: 1987,
   MIN: 1973
@@ -68,6 +76,8 @@ const ARCHIVE_CHRONOLOGY = {
 /**/
 module.exports = {
   ARCHIVE_CHRONOLOGY,
+	AUTHOR,
+	AUTHOR_VERSIONS,
   DIRS,
   FILES,
   GLOBS,

@@ -8,7 +8,6 @@
     "update-source": "gulp update-source"
   },
   "dependencies": {
-    "sridhar-maharaj-archive": "scsm-ua/sridhar-maharaj-archive#refactor-footnotes-links",
     "gulp-jsoncombine-array": "^1.0.0",
     "gulp-rename": "^2.0.0",
     "gulp-sass": "^5.1.0",
@@ -17,6 +16,8 @@
     "html-validate": "8.21.0",
     "marked": "^13.0.2",
     "sass": "^1.77.8",
+    "speakingurl": "^14.0.1",
+    "sridhar-maharaj-archive": "scsm-ua/sridhar-maharaj-archive#refactor-footnotes-links",
     "yaml": "^2.5.0"
   },
   "devDependencies": {

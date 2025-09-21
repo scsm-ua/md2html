@@ -4,12 +4,31 @@ const rename = require('gulp-rename');
 const sass = require('gulp-sass')(require('sass'));
 const shell = require('gulp-shell');
 /**/
+const { convertDoc } = require('./scripts/doc2md');
 const { convertFtnFiles } = require('./scripts/footnotes2html');
 const { convertTextFiles } = require('./scripts/text2html');
 const { convertTags } = require('./scripts/convertTags');
 const { DIRS, FILES, GLOBS } = require('./scripts/const');
 const { getDictionaries } = require('./scripts/helpers');
 const { processPosts } = require('./scripts/dateSort');
+
+/**
+ *
+ */
+gulp.task('doc-md', () => {
+  return gulp
+    .src(GLOBS.DOCS)
+    .pipe(convertDoc())
+    .pipe(
+      rename({ extname: '.md' })
+    )
+    // .pipe(jsoncombinearray(FILES.COLLECTIONS.POSTS, (dataArray) =>
+    //   Buffer.from(
+    //     JSON.stringify(processPosts(dataArray), null, 4)
+    //   )
+    // ))
+    .pipe(gulp.dest(DIRS.INPUT.TEST));
+});
 
 /**
  *
