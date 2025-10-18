@@ -9,7 +9,6 @@ const { convertTextFiles } = require('./scripts/text2html');
 const { convertTags } = require('./scripts/convertTags');
 const { DIRS, FILES, GLOBS } = require('./scripts/const');
 const { getDictionaries } = require('./scripts/helpers');
-const { processPosts } = require('./scripts/dateSort');
 
 /**
  *
@@ -23,7 +22,7 @@ gulp.task('text-json', () => {
     )
     .pipe(jsoncombinearray(FILES.COLLECTIONS.POSTS, (dataArray) =>
       Buffer.from(
-        JSON.stringify(processPosts(dataArray), null, 4)
+        JSON.stringify(dataArray, null, 2)
       )
     ))
     .pipe(gulp.dest(DIRS.OUTPUT.JSON));
@@ -55,7 +54,7 @@ gulp.task('ftn-json', () => {
       rename({ extname: '.json' })
     )
     .pipe(jsoncombinearray(FILES.COLLECTIONS.FOOTNOTES, (dataArray) =>
-      Buffer.from(JSON.stringify(dataArray, null, 4))
+      Buffer.from(JSON.stringify(dataArray, null, 2))
     ))
     .pipe(gulp.dest(DIRS.OUTPUT.JSON));
 });

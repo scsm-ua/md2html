@@ -22,30 +22,50 @@ const PART = {
   FOOTNOTES: 'FOOTNOTES'
 };
 
+/**/
+const METADATA_VALIDATION_SCHEME = [
+	{ field: 'author', severity: 'error' },
+	{ field: 'audioSrc', severity: 'error' },
+	{ field: 'category', severity: 'error' },
+	{ field: 'date', severity: 'warning' },
+	{ field: 'language', severity: 'error' },
+	{ field: 'tags', severity: 'warning' },
+	{ field: 'updated', severity: 'error' }
+];
+
+/* Evaluated function. Don't remove. */
+function errorLogger(field, slug) {
+	const msg = `Error: NO ${field.toUpperCase()} in file "${slug}.md".`;
+	console.error(chalk.blue.bgRed.bold(msg));
+}
+
+/* Evaluated function. Don't remove. */
+function warningLogger(field, slug) {
+	const msg = `Warning: NO ${field.toUpperCase()} in file "${slug}.md".`;
+	console.warn(chalk.black.bgYellow.bold(msg));
+}
 
 /**
  *
  */
 function validateMeta(meta, { categories, tags }) {
-  if (!('category' in meta)) {
-    const msg = `Warning: NO CATEGORY in file "${meta.slug}.md".`;
-    console.warn(chalk.black.bgYellow.bold(msg));
-    
-  } else if (!categories.includes(meta.category.slug)) {
-    const msg = `UNKNOWN CATEGORY "${meta.category.slug}" in file "${meta.slug}.md"!`;
+	METADATA_VALIDATION_SCHEME.forEach(({ field, severity })=> {
+		if (!(field in meta) || !meta[field] || meta[field]?.length === 0) {
+			const ex = `${severity}Logger("${field}", "${meta.slug}")`;
+			eval(ex);
+		}
+	});
+	
+	if (!categories.includes(meta.category)) {
+    const msg = `UNKNOWN CATEGORY "${meta.category}" in file "${meta.slug}.md"!`;
     console.error(chalk.blue.bgRed.bold(msg));
     throw new Error("Encountered unknown category!");
   }
   
-  if (!('tags' in meta) || !meta.tags.length) {
-    const msg = `Warning: NO TAGS in file "${meta.slug}.md".`;
-    console.warn(chalk.black.bgYellow.bold(msg));
-  }
-  
-  const invalidTag = meta.tags?.find((tag) => !tags.includes(tag.slug));
+  const invalidTag = meta.tags?.find((tag) => !tags.includes(tag));
   
   if (invalidTag) {
-    const msg = `UNKNOWN TAG "${invalidTag.slug}" in file "${meta.slug}.md"!`;
+    const msg = `UNKNOWN TAG "${invalidTag}" in file "${meta.slug}.md"!`;
     console.error(chalk.blue.bgRed.bold(msg));
     throw new Error("Encountered unknown tag!");
   }

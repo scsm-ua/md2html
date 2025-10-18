@@ -30,7 +30,7 @@ function convert(str) {
   const items = Object.entries(JSON.parse(str))
     .map(([slug, name]) => ({ name, slug }));
   
-  return JSON.stringify(items, null, 4);
+  return JSON.stringify(items, null, 2);
 }
 
 /**/

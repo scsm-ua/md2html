@@ -60,14 +60,7 @@ const REGEXP = {
 };
 
 /**/
-const ARCHIVE_CHRONOLOGY = {
-  MAX: 1987,
-  MIN: 1973
-};
-
-/**/
 module.exports = {
-  ARCHIVE_CHRONOLOGY,
   DIRS,
   FILES,
   GLOBS,
