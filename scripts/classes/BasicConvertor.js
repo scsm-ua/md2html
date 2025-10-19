@@ -16,6 +16,12 @@ const ARCHIVE_CHRONOLOGY = {
 };
 
 /**
+ * @typedef {Object} FootnoteRef
+ * @property {string} raw
+ * @property {string} slug
+ */
+
+/**
  * @typedef {Object} Link
  * @property {string} href - rather path, e.g. "/en/file_123.rtf"
  * @property {string} title
@@ -53,6 +59,7 @@ const ARCHIVE_CHRONOLOGY = {
  * Abstract class.
  */
 class BasicConvertor {
+	footnotes; 					// {Array<FootnoteRef>}
 	meta;								// {MetaProcessed}
 	notesMd;						// {string} notes in 'md' format.
 	notesStartPosition;	// {number} position, where the article notes begin.
@@ -81,12 +88,14 @@ class BasicConvertor {
 		
 		this.rawText = rawText;
 		this.notesStartPosition = rawText.search(REGEXP.FOOTNOTES_BEGINNING_REGEXP);
+		const meta = yaml.parse(rawMeta);
 		
+		// Order matters!
 		this.extractNotes();
+		this.processFootnotes(meta.slug);
 		this.extractText(textParser);
-		this.processMeta(yaml.parse(rawMeta));
+		this.processMeta(meta);
 		this.processTitle(this.extractTitle());
-		this.processFootnotes();
 	}
 	
 	/**
@@ -157,6 +166,7 @@ class BasicConvertor {
 			author,
 			category: category.slug,
 			date: date,
+			footnotes: this.footnotes,
 			language: 'ru',
 			slug,
 			tags: _tags || null,
@@ -182,7 +192,9 @@ class BasicConvertor {
 	/**
 	 * Abstract private method.
 	 */
-	processFootnotes = Function.prototype;
+	processFootnotes() {
+		throw new ReferenceError('Method "processFootnotes" has NOT been implemented!');
+	};
 }
 
 

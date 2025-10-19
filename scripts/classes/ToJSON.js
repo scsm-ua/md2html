@@ -4,32 +4,17 @@ const path = require('path');
 const { BasicConvertor } = require('./BasicConvertor');
 const { REGEXP } = require('../const');
 
-/**
- * @typedef {Object} FootnoteRef
- * @property {string} raw
- * @property {string} slug
- */
 
 /**
  *
  */
 class ToJSON extends BasicConvertor {
-	footnotes; // {Array<FootnoteRef> | null}
-	
-	/**/
-	processFootnotes() {
-		this.footnotes = this.notesStartPosition < 0
-			? null
-			:	this.notesMd.split('\n')
-				.map(this.mapFootnote)
-				.filter(Boolean);
-	}
-	
 	/**
 	 * @param note {string}
+	 * @param postSlug {string}
 	 * @return {FootnoteRef | null}
 	 */
-	mapFootnote = (note) => {
+	static mapFootnote = (note, postSlug) => {
 		if (!note) return null;
 		const res = REGEXP.FOOTNOTE_PATH.exec(note);
 		
@@ -38,13 +23,22 @@ class ToJSON extends BasicConvertor {
 		
 		if (!res[0] || !slug) {
 			const msg =
-				`CAN'T EXTRACT FOOTNOTE SLUG from "${note}" for source file "${this.meta.slug}.md"!`;
+				`CAN'T EXTRACT FOOTNOTE SLUG from "${note}" for source file "${postSlug}.md"!`;
 			
 			console.warn(chalk.blue.bgRed.bold(msg));
 			return null;
 		}
 		
 		return { raw: note, slug };
+	}
+	
+	/**/
+	processFootnotes(slug) {
+		this.footnotes = this.notesStartPosition < 0
+			? null
+			:	this.notesMd.split('\n')
+				.map((note) => ToJSON.mapFootnote(note, slug))
+				.filter(Boolean);
 	}
 	
 	/**
