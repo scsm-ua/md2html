@@ -12,11 +12,14 @@ function readSlugList(name) {
 }
 
 /**
- *
+ * @returns {Dictionaries}
  */
 function getDictionaries() {
   return {
     categories: readSlugList(FILES.ARCHIVE.CATEGORIES),
+    footnotesByFile: JSON.parse(
+      fs.readFileSync(DIRS.INPUT.FOOTNOTES_FILE).toString()
+    ),
     tags: readSlugList(FILES.ARCHIVE.TAGS)
   }
 }
@@ -51,10 +54,28 @@ function getFileHash(str) {
   return hash.read();
 }
 
+/**
+ * @param ftnNumber {string}
+ * @returns {string}
+ */
+function getFtnNameByNumber(ftnNumber) {
+  return `ftn${ftnNumber}`;
+}
+
+/**
+ * @param ftnNumber {string}
+ * @returns {string}
+ */
+function getFtnLinkIdByNumber(ftnNumber) {
+  return `link-ftn${ftnNumber}`;
+}
+
 
 /**/
 module.exports = {
   getDictionaries,
   getFileHash,
+  getFtnNameByNumber,
+  getFtnLinkIdByNumber,
   toIsoDateWithTimezone
 };

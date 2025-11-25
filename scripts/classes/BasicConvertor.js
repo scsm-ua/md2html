@@ -16,53 +16,14 @@ const ARCHIVE_CHRONOLOGY = {
 };
 
 /**
- * @typedef {Object} FootnoteRef
- * @property {string} raw
- * @property {string} slug
- */
-
-/**
- * @typedef {Object} Link
- * @property {string} href - rather path, e.g. "/en/file_123.rtf"
- * @property {string} title
- */
-
-/**
- * @typedef {Object} Tag
- * @property {string} slug
- * @property {string} title
- */
-
-/**
- *  @typedef {Object} MetaParsed
- *  @property {string} author - "Шрила Бхакти Ракшак Шридхар Дев-Госвами Махарадж"
- *  @property {string} category - category slug
- *  @property {string} slug
- *  @property {Array<Link>} links
- *  @property {Array<Tag>} tags
- */
-
-/**
- *  @typedef {Object} MetaProcessed
- *  @property {string} author - "Шрила Бхакти Ракшак Шридхар Дев-Госвами Махарадж"
- *  @property {string | null} audioSrc - "/ru/file_123.mp3"
- *  @property {string} category - category slug
- *  @property {string} slug
- *  @property {string | null} date - "1982-01-25" or "1982-01"
- *  @property {string} language - "ru"
- *  @property {string} updated - "2024-10-16T07:36:17+03:00"
- *  @property {Array<string> | null} tags
- *  @property {string | null} year - "1973"
- */
-
-/**
  * Abstract class.
  */
 class BasicConvertor {
-	footnotes; 					// {Array<FootnoteRef>}
-	meta;								// {MetaProcessed}
+	footnotes; 						// {Array<FootnoteItemHtml>}
+	footnotesByFile;				// {FootnotesByFile}
+	meta;							// {MetaProcessed}
 	notesMd;						// {string} notes in 'md' format.
-	notesStartPosition;	// {number} position, where the article notes begin.
+	notesStartPosition;				// {number} position, where the article notes begin.
 	rawText;						// {string} title + textMd + notesMd.
 	textHtml;						// {string} article main text as HTML string.
 	title;							// {string} article title.
@@ -81,12 +42,13 @@ class BasicConvertor {
 	}
 	
 	/**/
-	constructor(dataString, textParser) {
+	constructor(dataString, textParser, footnotesByFile) {
 		const [rawMeta, rawText] = dataString.split('---\n')
 			.filter(Boolean)
 			.map((s) => s.trim());
 		
 		this.rawText = rawText;
+		this.footnotesByFile = footnotesByFile;
 		this.notesStartPosition = rawText.search(REGEXP.FOOTNOTES_BEGINNING_REGEXP);
 		const meta = yaml.parse(rawMeta);
 		

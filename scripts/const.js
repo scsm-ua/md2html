@@ -10,6 +10,7 @@ const PATH = {
 const DIRS = {
   ARCHIVE: PROJECT_ROOT_DIR + PATH.ARCHIVE_PATH,
   INPUT: {
+    FOOTNOTES_FILE: PROJECT_ROOT_DIR + '/node_modules/sridhar-maharaj-archive/scripts/footnotes.json',
     ROOT: PROJECT_ROOT_DIR + PATH.ARCHIVE_PATH + '/ru',
     TEST: PROJECT_ROOT_DIR + '/test',
   },

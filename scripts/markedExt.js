@@ -1,3 +1,4 @@
+const { getFtnNameByNumber, getFtnLinkIdByNumber } = require('./helpers');
 const { REGEXP } = require('./const');
 
 /**/
@@ -10,7 +11,7 @@ function processFootnotes(text) {
   if (REGEXP.FOOTNOTE_REGEXP.test(text.slice(0, 12))) {
     const number = REGEXP.FOOTNOTE_REGEXP.exec(text.slice(0, 12))[1];
     const ftn = `
-      <a class="Article__link" href="#ftn-link-${number}">
+      <a class="Article__link" href="#${getFtnLinkIdByNumber(number)}">
         [${number}]
       </a>
     `;
@@ -19,7 +20,7 @@ function processFootnotes(text) {
       .replace('.md"', '.html"');
     
     return `
-      <p class="Article__footnote" id="ftn-${number}">
+      <p class="Article__footnote" id="${getFtnNameByNumber(number)}">
         ${_text}
       </p>
     `;
@@ -47,7 +48,7 @@ function processFootnoteLinks(text) {
  */
 function linkRenderer(_, number) {
   return `
-    <a class="Article__link Article__foot-link" href="#ftn-${number}" id="ftn-link-${number}">
+    <a class="Article__link Article__foot-link" href="#${getFtnNameByNumber(number)}" id="${getFtnLinkIdByNumber(number)}">
       [${number}]
     </a>
   `;
@@ -108,14 +109,14 @@ function processVerse(text) {
   const anchor = ftn.replaceAll(REGEXP.FOOTNOTE_LINK_REGEXP, (_, number) => {
     ftnNumber = number;
     return `
-      <a class="Article__link Article__foot-link" href="#ftn-${number}">
+      <a class="Article__link Article__foot-link" href="#${getFtnNameByNumber(number)}">
         [${number}]
       </a>
     `;
   });
   
   return `
-    <div class="Article__verse-wrapper" id="ftn-link-${ftnNumber}">
+    <div class="Article__verse-wrapper" id="${getFtnLinkIdByNumber(ftnNumber)}">
       <div class="Article__verse">
         <pre><code>${verse}</code></pre>
       </div>
