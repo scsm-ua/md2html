@@ -45,7 +45,7 @@ class ToHTML extends BasicConvertor {
 						<div class="Meta">
 							<details>
 								<summary>Meta data</summary>
-								<pre><code>${JSON.stringify(this.meta)}</code></pre>
+								<pre><code>${JSON.stringify(this.meta, null, 2)}</code></pre>
 							</details>
 						</div>
 						
