@@ -45,7 +45,11 @@ const FILES = {
 const GLOBS = {
   JSON: DIRS.ARCHIVE + '/**/*.json',
   NOTES: DIRS.INPUT.ROOT + '/notes/**/*.md',
-  POSTS: [DIRS.INPUT.ROOT + '/**/*.md', '!' + DIRS.INPUT.ROOT + '/notes/**'],
+  POSTS: [
+    DIRS.INPUT.ROOT + '/**/*.md',
+    '!' + DIRS.INPUT.ROOT + '/notes/**',
+    '!' + DIRS.INPUT.ROOT + '/old/**'
+  ],
   SASS: DIRS.STYLES + '/**/*.scss'
 };
 

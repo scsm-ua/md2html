@@ -40,7 +40,7 @@ class BasicConvertor {
 		);
 		return isYearOk ? year : null;
 	}
-	
+
 	/**/
 	constructor(dataString, textParser, footnotesByFile) {
 		const [rawMeta, rawText] = dataString.split('---\n')
@@ -87,16 +87,16 @@ class BasicConvertor {
 	
 	/**/
 	processTitle(title) {
-		let result = title;
+		let result = title.trim();
 		
 		// Some titles contain article serial number which is subject to remove, e.g.
 		// "131. Необходимость и разновидности дикши"
 		const articleNumber = articleNumberRegEx.exec(result);
-		
+
 		if (articleNumber && articleNumber[1]) {
 			result = result.replace(articleNumber[1], '').trim();
 		}
-		
+
 		// Some titles are suffixed with recording code, which must prefix the title, e.g.
 		// "Необходимость и разновидности дикши. 1982.02.15.A2"
 		// should become
@@ -128,7 +128,6 @@ class BasicConvertor {
 			author,
 			category: category.slug,
 			date: date,
-			footnotes: this.footnotes,
 			language: 'ru',
 			slug,
 			tags: _tags || null,
@@ -174,7 +173,4 @@ function extractDate(title, tags) {
 }
 
 /**/
-module.exports = {
-	BasicConvertor,
-	extractDate // remove from here
-};
+module.exports = { BasicConvertor };

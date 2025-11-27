@@ -1,4 +1,3 @@
-const crypto = require('crypto');
 const fs = require('fs');
 /**/
 const { DIRS, FILES } = require('./const');
@@ -43,17 +42,6 @@ function toIsoDateWithTimezone(date) {
     ':' + pad(Math.abs(tzo) % 60);
 }
 
-
-/**
- *
- */
-function getFileHash(str) {
-  const hash = crypto.createHash('sha1').setEncoding('hex');
-  hash.write(str);
-  hash.end();
-  return hash.read();
-}
-
 /**
  * @param ftnNumber {string}
  * @returns {string}
@@ -74,7 +62,6 @@ function getFtnLinkIdByNumber(ftnNumber) {
 /**/
 module.exports = {
   getDictionaries,
-  getFileHash,
   getFtnNameByNumber,
   getFtnLinkIdByNumber,
   toIsoDateWithTimezone

@@ -1,4 +1,3 @@
-const chalk = require('chalk');
 const { marked } = require('marked');
 const path = require('path');
 
@@ -18,8 +17,7 @@ class ToJSON extends BasicConvertor {
 	 * @return {FootnoteItemHtml}
 	 */
 	static mapFootnote(ftnNumber, allPostFtn, rawFtns) {
-		const ftnName = getFtnNameByNumber(ftnNumber);
-
+		const ftnName = '_' + getFtnNameByNumber(ftnNumber);
 		const item = allPostFtn.items.find(({ name }) => name === ftnName);
 		const rawItem = rawFtns.find((raw) => raw.includes(ftnName));
 
@@ -46,17 +44,13 @@ class ToJSON extends BasicConvertor {
 			({ path }) => path.includes(slug)
 		);
 
-		if (!allPostFtn) {
-			const msg = `CAN'T FIND FOOTNOTES for source file "${slug}.md"!`;
-			console.warn(chalk.blue.bgRed.bold(msg));
-			return;
-		}
+		if (!allPostFtn) return;
 
-		const notes = Array.from(text.matchAll(REGEXP.FOOTNOTE_LINK_REGEXP))
-			.map(([_, ftnNumber]) => ToJSON.mapFootnote(ftnNumber, allPostFtn, rawFtns));
-
-		// console.log('++++++', JSON.stringify(notes, null, 2));
-		this.footnotes = notes;
+		this.footnotes = Array
+			.from(text.matchAll(REGEXP.FOOTNOTE_LINK_REGEXP))
+			.map(([_, ftnNumber]) =>
+				ToJSON.mapFootnote(ftnNumber, allPostFtn, rawFtns)
+			);
 	}
 	
 	/**
