@@ -64,7 +64,7 @@
 
 /**
  * @typedef {Object} FootnoteItemHtml
- * @property {string} name - "_ftn5".
+ * @property {string} name - "ftn5".
  * @property {string} [slug] - slug of the sloka.
  * @property {string} [title] - "Шримад-Бхагаватам 10.47.61".
  * @property {string} text - HTML string.
