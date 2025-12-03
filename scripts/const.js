@@ -10,6 +10,7 @@ const PATH = {
 const DIRS = {
   ARCHIVE: PROJECT_ROOT_DIR + PATH.ARCHIVE_PATH,
   INPUT: {
+    FOOTNOTES_FILE: PROJECT_ROOT_DIR + '/node_modules/sridhar-maharaj-archive/scripts/footnotes.json',
     ROOT: PROJECT_ROOT_DIR + PATH.ARCHIVE_PATH + '/ru',
     TEST: PROJECT_ROOT_DIR + '/test',
   },
@@ -44,7 +45,11 @@ const FILES = {
 const GLOBS = {
   JSON: DIRS.ARCHIVE + '/**/*.json',
   NOTES: DIRS.INPUT.ROOT + '/notes/**/*.md',
-  POSTS: [DIRS.INPUT.ROOT + '/**/*.md', '!' + DIRS.INPUT.ROOT + '/notes/**'],
+  POSTS: [
+    DIRS.INPUT.ROOT + '/**/*.md',
+    '!' + DIRS.INPUT.ROOT + '/notes/**',
+    '!' + DIRS.INPUT.ROOT + '/old/**'
+  ],
   SASS: DIRS.STYLES + '/**/*.scss'
 };
 

@@ -57,7 +57,7 @@ class ToHTML extends BasicConvertor {
 					</main>
 				</body>
 			</html>
-  	`;
+  		`;
 	}
 }
 

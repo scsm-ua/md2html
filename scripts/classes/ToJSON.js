@@ -1,7 +1,8 @@
-const chalk = require('chalk');
+const { marked } = require('marked');
 const path = require('path');
 
 const { BasicConvertor } = require('./BasicConvertor');
+const { getFtnNameByNumber } = require('../helpers');
 const { REGEXP } = require('../const');
 
 
@@ -10,35 +11,46 @@ const { REGEXP } = require('../const');
  */
 class ToJSON extends BasicConvertor {
 	/**
-	 * @param note {string}
-	 * @param postSlug {string}
-	 * @return {FootnoteRef | null}
+	 * @param ftnNumber {string}
+	 * @param allPostFtn {FootnotesByFile}
+	 * @param rawFtns {Array<string>}
+	 * @return {FootnoteItemHtml}
 	 */
-	static mapFootnote = (note, postSlug) => {
-		if (!note) return null;
-		const res = REGEXP.FOOTNOTE_PATH.exec(note);
-		
-		if (!res) return null;
-		const slug = path.parse(res[0]).name;
-		
-		if (!res[0] || !slug) {
-			const msg =
-				`CAN'T EXTRACT FOOTNOTE SLUG from "${note}" for source file "${postSlug}.md"!`;
-			
-			console.warn(chalk.blue.bgRed.bold(msg));
-			return null;
-		}
-		
-		return { raw: note, slug };
+	static mapFootnote(ftnNumber, allPostFtn, rawFtns) {
+		const ftnName = '_' + getFtnNameByNumber(ftnNumber);
+		const item = allPostFtn.items.find(({ name }) => name === ftnName);
+		const rawItem = rawFtns.find((raw) => raw.includes(ftnName));
+
+		const res = REGEXP.FOOTNOTE_PATH.exec(rawItem);
+		const slug = res ? path.parse(res[0]).name : null;
+
+		return {
+			name: item.name.replace('_', ''),
+			slug: slug,
+			text: marked.parse(item.text),
+			title: item.title
+		};
 	}
 	
 	/**/
 	processFootnotes(slug) {
-		this.footnotes = this.notesStartPosition < 0
-			? null
-			:	this.notesMd.split('\n')
-				.map((note) => ToJSON.mapFootnote(note, slug))
-				.filter(Boolean);
+		const rawFtns = this.notesMd.split('\n');
+
+		const text = this.notesStartPosition < 0
+			? this.rawText
+			: this.rawText.slice(0, this.notesStartPosition).trimEnd();
+
+		const allPostFtn = this.footnotesByFile.find(
+			({ path }) => path.includes(slug)
+		);
+
+		if (!allPostFtn) return;
+
+		this.footnotes = Array
+			.from(text.matchAll(REGEXP.FOOTNOTE_LINK_REGEXP))
+			.map(([_, ftnNumber]) =>
+				ToJSON.mapFootnote(ftnNumber, allPostFtn, rawFtns)
+			);
 	}
 	
 	/**

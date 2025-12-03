@@ -16,53 +16,14 @@ const ARCHIVE_CHRONOLOGY = {
 };
 
 /**
- * @typedef {Object} FootnoteRef
- * @property {string} raw
- * @property {string} slug
- */
-
-/**
- * @typedef {Object} Link
- * @property {string} href - rather path, e.g. "/en/file_123.rtf"
- * @property {string} title
- */
-
-/**
- * @typedef {Object} Tag
- * @property {string} slug
- * @property {string} title
- */
-
-/**
- *  @typedef {Object} MetaParsed
- *  @property {string} author - "Шрила Бхакти Ракшак Шридхар Дев-Госвами Махарадж"
- *  @property {string} category - category slug
- *  @property {string} slug
- *  @property {Array<Link>} links
- *  @property {Array<Tag>} tags
- */
-
-/**
- *  @typedef {Object} MetaProcessed
- *  @property {string} author - "Шрила Бхакти Ракшак Шридхар Дев-Госвами Махарадж"
- *  @property {string | null} audioSrc - "/ru/file_123.mp3"
- *  @property {string} category - category slug
- *  @property {string} slug
- *  @property {string | null} date - "1982-01-25" or "1982-01"
- *  @property {string} language - "ru"
- *  @property {string} updated - "2024-10-16T07:36:17+03:00"
- *  @property {Array<string> | null} tags
- *  @property {string | null} year - "1973"
- */
-
-/**
  * Abstract class.
  */
 class BasicConvertor {
-	footnotes; 					// {Array<FootnoteRef>}
-	meta;								// {MetaProcessed}
+	footnotes; 						// {Array<FootnoteItemHtml>}
+	footnotesByFile;				// {FootnotesByFile}
+	meta;							// {MetaProcessed}
 	notesMd;						// {string} notes in 'md' format.
-	notesStartPosition;	// {number} position, where the article notes begin.
+	notesStartPosition;				// {number} position, where the article notes begin.
 	rawText;						// {string} title + textMd + notesMd.
 	textHtml;						// {string} article main text as HTML string.
 	title;							// {string} article title.
@@ -79,14 +40,15 @@ class BasicConvertor {
 		);
 		return isYearOk ? year : null;
 	}
-	
+
 	/**/
-	constructor(dataString, textParser) {
+	constructor(dataString, textParser, footnotesByFile) {
 		const [rawMeta, rawText] = dataString.split('---\n')
 			.filter(Boolean)
 			.map((s) => s.trim());
 		
 		this.rawText = rawText;
+		this.footnotesByFile = footnotesByFile;
 		this.notesStartPosition = rawText.search(REGEXP.FOOTNOTES_BEGINNING_REGEXP);
 		const meta = yaml.parse(rawMeta);
 		
@@ -125,16 +87,16 @@ class BasicConvertor {
 	
 	/**/
 	processTitle(title) {
-		let result = title;
+		let result = title.trim();
 		
 		// Some titles contain article serial number which is subject to remove, e.g.
 		// "131. Необходимость и разновидности дикши"
 		const articleNumber = articleNumberRegEx.exec(result);
-		
+
 		if (articleNumber && articleNumber[1]) {
 			result = result.replace(articleNumber[1], '').trim();
 		}
-		
+
 		// Some titles are suffixed with recording code, which must prefix the title, e.g.
 		// "Необходимость и разновидности дикши. 1982.02.15.A2"
 		// should become
@@ -166,7 +128,6 @@ class BasicConvertor {
 			author,
 			category: category.slug,
 			date: date,
-			footnotes: this.footnotes,
 			language: 'ru',
 			slug,
 			tags: _tags || null,
@@ -212,7 +173,4 @@ function extractDate(title, tags) {
 }
 
 /**/
-module.exports = {
-	BasicConvertor,
-	extractDate // remove from here
-};
+module.exports = { BasicConvertor };

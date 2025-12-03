@@ -1,4 +1,3 @@
-const crypto = require('crypto');
 const fs = require('fs');
 /**/
 const { DIRS, FILES } = require('./const');
@@ -12,11 +11,14 @@ function readSlugList(name) {
 }
 
 /**
- *
+ * @returns {Dictionaries}
  */
 function getDictionaries() {
   return {
     categories: readSlugList(FILES.ARCHIVE.CATEGORIES),
+    footnotesByFile: JSON.parse(
+      fs.readFileSync(DIRS.INPUT.FOOTNOTES_FILE).toString()
+    ),
     tags: readSlugList(FILES.ARCHIVE.TAGS)
   }
 }
@@ -40,21 +42,27 @@ function toIsoDateWithTimezone(date) {
     ':' + pad(Math.abs(tzo) % 60);
 }
 
+/**
+ * @param ftnNumber {string}
+ * @returns {string}
+ */
+function getFtnNameByNumber(ftnNumber) {
+  return `ftn${ftnNumber}`;
+}
 
 /**
- *
+ * @param ftnNumber {string}
+ * @returns {string}
  */
-function getFileHash(str) {
-  const hash = crypto.createHash('sha1').setEncoding('hex');
-  hash.write(str);
-  hash.end();
-  return hash.read();
+function getFtnLinkIdByNumber(ftnNumber) {
+  return `link-ftn${ftnNumber}`;
 }
 
 
 /**/
 module.exports = {
   getDictionaries,
-  getFileHash,
+  getFtnNameByNumber,
+  getFtnLinkIdByNumber,
   toIsoDateWithTimezone
 };

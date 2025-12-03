@@ -1,5 +1,7 @@
+const fs = require('fs');
 const { Marked } = require('marked');
 const { Transform } = require('stream');
+
 /**/
 const { preprocessText, postprocessText, textRenderer } = require('./markedExt');
 const { ToHTML } = require('./classes/ToHTML');
@@ -17,7 +19,11 @@ const textParser = new Marked({
 });
 
 
-/**/
+/**
+ * @param dictionaries {Dictionaries}
+ * @param [isJsonMode] {boolean}
+ * @returns {*}
+ */
 function convertTextFiles(dictionaries, isJsonMode) {
   return new Transform({
     objectMode: true,
@@ -39,12 +45,17 @@ function convertTextFiles(dictionaries, isJsonMode) {
 
 
 /**
- *
+ * @param str {string}
+ * @param dictionaries {Dictionaries}
+ * @param [isJsonMode] {boolean}
+ * @returns {string}
  */
 function text2html(str, dictionaries, isJsonMode) {
-	const convertor = isJsonMode ? new ToJSON(str, textParser) : new ToHTML(str, textParser);
-	const meta = convertor.getMeta();
-	
+    const convertor = isJsonMode
+        ? new ToJSON(str, textParser, dictionaries.footnotesByFile)
+        : new ToHTML(str, textParser, dictionaries.footnotesByFile);
+
+    const meta = convertor.getMeta();
 	validateMeta(meta, dictionaries);
 	validateText(convertor.getText(), meta.slug);
 	return convertor.convert();

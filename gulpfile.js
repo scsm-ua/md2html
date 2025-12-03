@@ -89,12 +89,13 @@ gulp.task('test-html', () => {
         // '/64-shrila-sridhar-maharaj-o-svoey-biografii-lichnosti-i-duhovnom-opyte' +
         // '/992-1981-03-12-a1-bog-pomogaet-iskrennim-iskatelyam-istiny-o-miltone-i-vordsvorte.md',
         // '/71-o-vazhnosti-rasprostraneniya-ucheniya-shrily-sridhara-maharaja' +
-        // '/1134-1982-07-02-a4-shrila-shridhar-maharadzh-delaet-sokrovennye-istiny-o-soznanii-krishny-bolee-otchetlivymi.md'
+        // '/1134-1982-07-02-a4-shrila-shridhar-maharadzh-delaet-sokrovennye-istiny-o-soznanii-krishny-bolee-otchetlivymi.md',
         // '/75-poeziya-shrily-b-r-sridhara-maharaja-v-ispolnenii-shrily-b-s-govindy-maharaja/1145-shri-shri-dajita-dasa-dashakam.md'
-        '/188-1980-07-11-a7-v-nashih-sladchajshih-pesnyah-poetsya-o-pechali.md'
+        // '/188-1980-07-11-a7-v-nashih-sladchajshih-pesnyah-poetsya-o-pechali.md'
+          '/866-1981-03-13-a-b-gde-angely-stupit-ne-smeyut.md'
       ].map((path) => /*DIRS.INPUT.ROOT*/ DIRS.INPUT.TEST + path)
     )
-    .pipe(convertTextFiles(getDictionaries()))
+    .pipe(convertTextFiles(getDictionaries(), false))
     .pipe(
       rename({ extname: '.html' })
     )
