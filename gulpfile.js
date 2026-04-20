@@ -9,6 +9,7 @@ const { convertTextFiles } = require('./scripts/text2html');
 const { convertTags } = require('./scripts/convertTags');
 const { DIRS, FILES, GLOBS } = require('./scripts/const');
 const { getDictionaries } = require('./scripts/helpers');
+const { groupPostsByYears } = require('./scripts/groupPostsByYears');
 
 /**
  *
@@ -104,11 +105,25 @@ gulp.task('test-html', () => {
 
 
 /**
+ * Combines concise posts info into groups by years and months.
+ */
+gulp.task('build-grouped', () => {
+  return gulp
+		.src(DIRS.OUTPUT.JSON + '/' + FILES.COLLECTIONS.POSTS)
+		.pipe(groupPostsByYears())
+		.pipe(
+			rename({ basename: FILES.COLLECTIONS.YEAR_GROUPED })
+		)
+    .pipe(gulp.dest(DIRS.OUTPUT.JSON));
+});
+
+
+/**
  *
  */
 gulp.task('build-tags', () => {
   return gulp
-    .src(GLOBS.JSON)
+		.src(GLOBS.JSON)
     .pipe(convertTags())
     .pipe(gulp.dest(DIRS.OUTPUT.JSON));
 });
