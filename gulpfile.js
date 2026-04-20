@@ -155,7 +155,7 @@ gulp.task('sass', () => {
  */
 gulp.task(
   'build-json',
-  gulp.series('clean-json', 'text-json', 'ftn-json', 'build-tags')
+  gulp.series('clean-json', 'text-json', 'ftn-json', 'build-tags', 'build-grouped')
 );
 
 /**/
