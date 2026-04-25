@@ -109,11 +109,11 @@ gulp.task('test-html', () => {
  */
 gulp.task('build-grouped', () => {
   return gulp
-		.src(DIRS.OUTPUT.JSON + '/' + FILES.COLLECTIONS.POSTS)
-		.pipe(groupPostsByYears())
-		.pipe(
-			rename({ basename: FILES.COLLECTIONS.YEAR_GROUPED })
-		)
+    .src(DIRS.OUTPUT.JSON + '/' + FILES.COLLECTIONS.POSTS)
+    .pipe(groupPostsByYears())
+    .pipe(
+      rename({ basename: FILES.COLLECTIONS.YEAR_GROUPED })
+    )
     .pipe(gulp.dest(DIRS.OUTPUT.JSON));
 });
 
@@ -123,7 +123,7 @@ gulp.task('build-grouped', () => {
  */
 gulp.task('build-tags', () => {
   return gulp
-		.src(GLOBS.JSON)
+    .src(GLOBS.JSON)
     .pipe(convertTags())
     .pipe(gulp.dest(DIRS.OUTPUT.JSON));
 });
