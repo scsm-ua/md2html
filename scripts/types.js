@@ -1,6 +1,29 @@
 /* Posts */
 
 /**
+ * @typedef {Object} Post
+ * @property {Array<FootnoteItemHtml>} footnotes
+ * @property {string} id
+ * @property {MetaProcessed} meta
+ * @property {string} text
+ * @property {string} title
+ */
+
+/**
+ * @typedef {Object} PostShort
+ * @property {string} audio
+ * @property {string} author
+ * @property {string} category
+ * @property {string} date
+ * @property {string} id
+ * @property {'ru'} language
+ * @property {string} slug
+ * @property {string[]} tags
+ * @property {string} title
+ * @property {string | null} year
+ */
+
+/**
  * @typedef {Object} FootnoteRef
  * @property {string} raw
  * @property {string} slug
@@ -69,3 +92,27 @@
  * @property {string} [title] - "Шримад-Бхагаватам 10.47.61".
  * @property {string} text - HTML string.
  */
+
+/* Fixtures */
+
+/**
+ * @typedef {Object} Year
+ * @property {string} description
+ * @property {string} imageFile
+ * @property {number} postCount
+ * @property {number} value
+ */
+
+// /* Years grouped */
+//
+// /**
+//  * @typedef {Object} YearCatalog
+//  * @property {string | null} year
+//  * @property {Array<MonthRecord>} months
+//  */
+
+// /**
+//  * @typedef {Object} MonthRecord
+//  * @property {Month} month
+//  * @property {Array<PostShort>} records
+//  */

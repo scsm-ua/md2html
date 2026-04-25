@@ -9,6 +9,7 @@ const PATH = {
 /**/
 const DIRS = {
   ARCHIVE: PROJECT_ROOT_DIR + PATH.ARCHIVE_PATH,
+  FIXTURES: PROJECT_ROOT_DIR + '/fixtures',
   INPUT: {
     FOOTNOTES_FILE: PROJECT_ROOT_DIR + '/node_modules/sridhar-maharaj-archive/scripts/footnotes.json',
     ROOT: PROJECT_ROOT_DIR + PATH.ARCHIVE_PATH + '/ru',
@@ -34,7 +35,9 @@ const FILES = {
   },
   COLLECTIONS: {
     FOOTNOTES: 'footnotes.json',
-    POSTS: 'posts.json'
+    POSTS: 'posts.json',
+    YEARS: 'years.json',
+    YEAR_GROUPED: 'years-grouped.json'
   },
   STYLES: {
     CSS: 'styles.css'

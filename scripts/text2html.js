@@ -1,4 +1,3 @@
-const fs = require('fs');
 const { Marked } = require('marked');
 const { Transform } = require('stream');
 

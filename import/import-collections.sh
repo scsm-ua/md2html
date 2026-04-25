@@ -34,6 +34,10 @@ JSON_PATH=../fixtures/years.json
 echoImport $JSON_PATH
 mongoimport --uri $DB_URI --type json --jsonArray --mode=upsert --file $JSON_PATH --upsertFields=value --collection years
 
+JSON_PATH=../output/json/years-grouped.json.json
+echoImport $JSON_PATH
+mongoimport --uri $DB_URI --type json --jsonArray --mode=upsert --file $JSON_PATH --upsertFields=value --collection years-grouped
+
 echo ''
 echo '--- Remove old data ---'
 mongosh $DB_NAME --quiet --file mongo-remove-old-data.js
