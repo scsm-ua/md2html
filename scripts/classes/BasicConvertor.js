@@ -126,7 +126,13 @@ class BasicConvertor {
 		const { author, category, links, slug, tags, audio, date } = data;
 		const audio_link = links?.find(({ href }) => href.trimEnd().endsWith('.mp3'));
 		
-		const audioSrc = audio_link?.href || audio?.mp3 || null;
+		let audioSrc;
+		if (audio?.mp3) {
+			// Temporary hardcode.
+			audioSrc = `/ru/${audio.mp3}`;
+		} else {
+			audioSrc = audio_link?.href || null;
+		}
 		const date_str = extractDate(this.title, tags, date);
 		const _tags = tags?.map(({ slug }) => slug);
 		
