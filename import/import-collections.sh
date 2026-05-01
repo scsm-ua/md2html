@@ -36,7 +36,7 @@ mongoimport --uri $DB_URI --type json --jsonArray --mode=upsert --file $JSON_PAT
 
 JSON_PATH=../output/json/years-grouped.json.json
 echoImport $JSON_PATH
-mongoimport --uri $DB_URI --type json --jsonArray --mode=upsert --file $JSON_PATH --upsertFields=value --collection years-grouped
+mongoimport --uri $DB_URI --type json --jsonArray --mode=upsert --file $JSON_PATH --upsertFields=year --collection years-grouped
 
 echo ''
 echo '--- Remove old data ---'
