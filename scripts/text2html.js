@@ -30,7 +30,7 @@ function convertTextFiles(dictionaries, isJsonMode) {
     transform(file, encoding, callback) {
       try {
         file.contents = Buffer.from(
-          text2html(file.contents.toString(), dictionaries, isJsonMode)
+          text2html(file.contents.toString(), dictionaries, isJsonMode, file.stem)
         );
         this.push(file);
         callback();
@@ -49,14 +49,14 @@ function convertTextFiles(dictionaries, isJsonMode) {
  * @param [isJsonMode] {boolean}
  * @returns {string}
  */
-function text2html(str, dictionaries, isJsonMode) {
+function text2html(str, dictionaries, isJsonMode, filename) {
     const convertor = isJsonMode
-        ? new ToJSON(str, textParser, dictionaries.footnotesByFile)
-        : new ToHTML(str, textParser, dictionaries.footnotesByFile);
+        ? new ToJSON(str, textParser, dictionaries.footnotesByFile, filename)
+        : new ToHTML(str, textParser, dictionaries.footnotesByFile, filename);
 
     const meta = convertor.getMeta();
-	validateMeta(meta, dictionaries);
-	validateText(convertor.getText(), meta.slug);
+	validateMeta(meta, dictionaries, filename);
+	validateText(convertor.getText(), filename);
 	return convertor.convert();
 }
 

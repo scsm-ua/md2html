@@ -13,7 +13,7 @@
  * @typedef {Object} PostShort
  * @property {string} audio
  * @property {string} author
- * @property {string} category
+ * @property {string | null} category
  * @property {string} date
  * @property {string} id
  * @property {'ru'} language
@@ -44,7 +44,7 @@
 /**
  *  @typedef {Object} MetaParsed
  *  @property {string} author - "Шрила Бхакти Ракшак Шридхар Дев-Госвами Махарадж"
- *  @property {string} category - category slug
+ *  @property {string | null} category - category slug
  *  @property {string} slug
  *  @property {Array<Link>} links
  *  @property {Array<Tag>} tags
@@ -54,7 +54,7 @@
  *  @typedef {Object} MetaProcessed
  *  @property {string} author - "Шрила Бхакти Ракшак Шридхар Дев-Госвами Махарадж"
  *  @property {string | null} audioSrc - "/ru/file_123.mp3"
- *  @property {string} category - category slug
+ *  @property {string | null} category - category slug
  *  @property {string} slug
  *  @property {string | null} date - "1982-01-25" or "1982-01"
  *  @property {string} language - "ru"

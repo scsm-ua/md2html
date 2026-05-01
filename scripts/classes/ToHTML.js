@@ -18,7 +18,7 @@ class ToHTML extends BasicConvertor {
 			this.footnotes = '';
 		} else {
 			const str = format(footnotesParser.parse(this.notesMd).replace(/^\s+|\s+$/gi, ''));
-			validateFtn(str, slug);
+			validateFtn(str, this.filename);
 			this.footnotes = str;
 		}
 	}

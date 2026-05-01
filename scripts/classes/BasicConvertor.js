@@ -1,3 +1,4 @@
+const chalk = require('chalk');
 const format = require('html-format');
 const yaml = require('yaml');
 
@@ -42,13 +43,14 @@ class BasicConvertor {
 	}
 
 	/**/
-	constructor(dataString, textParser, footnotesByFile) {
+	constructor(dataString, textParser, footnotesByFile, filename) {
 		const [rawMeta, rawText] = dataString.split('---\n')
 			.filter(Boolean)
 			.map((s) => s.trim());
 		
 		this.rawText = rawText;
 		this.footnotesByFile = footnotesByFile;
+		this.filename = filename;
 		this.notesStartPosition = rawText.search(REGEXP.FOOTNOTES_BEGINNING_REGEXP);
 		const meta = yaml.parse(rawMeta);
 		
@@ -57,7 +59,12 @@ class BasicConvertor {
 		this.processFootnotes(meta.slug);
 		this.extractText(textParser);
 		this.processMeta(meta);
-		this.processTitle(this.extractTitle());
+		this.processTitle(meta.title ?? this.extractTitle() ?? meta.record_id ?? '');
+		
+		if (!this.title) {
+			const msg = `Error: NO TITLE in file "${this.filename}.md".`;
+			console.error(chalk.blue.bgRed.bold(msg));
+		}
 	}
 	
 	/**
@@ -80,9 +87,9 @@ class BasicConvertor {
 	
 	/**/
 	extractTitle() {
-		return format(
-			this.rawText.slice(0, this.rawText.indexOf('\n')).replace('#', '')
-		);
+		const firstLine = this.rawText.slice(0, this.rawText.indexOf('\n'));
+		if (!firstLine.trimStart().startsWith('# ')) return null;
+		return format(firstLine.replace('# ', ''));
 	}
 	
 	/**/
@@ -116,23 +123,23 @@ class BasicConvertor {
 	 * @param data {MetaParsed}
 	 */
 	processMeta(data) {
-		const { author, category, links, slug, tags } = data;
-		const audio = links?.find(({ href }) => href.trimEnd().endsWith('.mp3'));
+		const { author, category, links, slug, tags, audio, date } = data;
+		const audio_link = links?.find(({ href }) => href.trimEnd().endsWith('.mp3'));
 		
-		const audioSrc = audio?.href || null;
-		const date = extractDate(this.title, tags);
+		const audioSrc = audio_link?.href || audio?.mp3 || null;
+		const date_str = extractDate(this.title, tags, date);
 		const _tags = tags?.map(({ slug }) => slug);
 		
 		this.meta = {
 			audioSrc,
 			author,
-			category: category.slug,
-			date: date,
+			category: category?.slug || null,
+			date: date_str,
 			language: 'ru',
 			slug,
 			tags: _tags || null,
 			updated: toIsoDateWithTimezone(new Date()),
-			year: BasicConvertor.extractYear(date)
+			year: BasicConvertor.extractYear(date_str)
 		};
 	}
 	
@@ -162,9 +169,15 @@ class BasicConvertor {
 /**
  *
  */
-function extractDate(title, tags) {
+function extractDate(title, tags, date_obj) {
 	const res = REGEXP.FULL_DATE_REGEXP.exec(title);
 	if (res && res[1]) return res[1].replaceAll('.', '-'); // 1982.01.25 -> 1982-01-25
+
+	if (date_obj?.year) {
+		const m = date_obj.month ? String(date_obj.month).padStart(2, '0') : '00';
+		const d = date_obj.day ? String(date_obj.day).padStart(2, '0') : '00';
+		return `${date_obj.year}-${m}-${d}`;
+	}
 	
 	const tag = tags?.find((item) => REGEXP.DATE_REGEXP.test(item.slug));
 	return tag
