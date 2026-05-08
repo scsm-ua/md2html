@@ -4,7 +4,6 @@ const yaml = require('yaml');
 
 /**/
 const { REGEXP } = require('../const');
-const { toIsoDateWithTimezone } = require('../helpers');
 
 /**/
 const articleNumberRegEx = /^(\d+\.)\s/;
@@ -34,12 +33,13 @@ class BasicConvertor {
 	 * @return {string}
 	 */
 	static extractYear(date) {
-		const [year] = (date || '').split('-');
+		const [yearStr] = (date || '').split('-');
+		const year = Number(yearStr);
 		const isYearOk = year && (
 			year <= ARCHIVE_CHRONOLOGY.MAX ||
 			year >= ARCHIVE_CHRONOLOGY.MIN
 		);
-		return isYearOk ? year : null;
+		return isYearOk ? yearStr : null;
 	}
 
 	/**/
@@ -123,29 +123,21 @@ class BasicConvertor {
 	 * @param data {MetaParsed}
 	 */
 	processMeta(data) {
-		const { author, category, links, slug, tags, audio, date } = data;
-		const audio_link = links?.find(({ href }) => href.trimEnd().endsWith('.mp3'));
-		
-		let audioSrc;
-		if (audio?.mp3) {
-			// Temporary hardcode.
-			audioSrc = `/ru/${audio.mp3}`;
-		} else {
-			audioSrc = audio_link?.href || null;
-		}
-		const date_str = extractDate(this.title, tags, date);
+		const { author, category, legacy, record_id, slug, tags, audio, date } = data;
 		const _tags = tags?.map(({ slug }) => slug);
 		
 		this.meta = {
-			audioSrc,
+			audio,
 			author,
 			category: category?.slug || null,
-			date: date_str,
+			date,
 			language: 'ru',
+			record_id: record_id || null,
 			slug,
 			tags: _tags || null,
-			updated: toIsoDateWithTimezone(new Date()),
-			year: BasicConvertor.extractYear(date_str)
+			topic_idx: legacy?.index || null,
+			updated: new Date().toISOString(),
+			year: BasicConvertor.extractYear(date)
 		};
 	}
 	
@@ -169,26 +161,6 @@ class BasicConvertor {
 	processFootnotes() {
 		throw new ReferenceError('Method "processFootnotes" has NOT been implemented!');
 	};
-}
-
-
-/**
- *
- */
-function extractDate(title, tags, date_obj) {
-	const res = REGEXP.FULL_DATE_REGEXP.exec(title);
-	if (res && res[1]) return res[1].replaceAll('.', '-'); // 1982.01.25 -> 1982-01-25
-
-	if (date_obj?.year) {
-		const m = date_obj.month ? String(date_obj.month).padStart(2, '0') : '00';
-		const d = date_obj.day ? String(date_obj.day).padStart(2, '0') : '00';
-		return `${date_obj.year}-${m}-${d}`;
-	}
-	
-	const tag = tags?.find((item) => REGEXP.DATE_REGEXP.test(item.slug));
-	return tag
-		? tag.slug.replaceAll('.', '-') // 1982-01
-		: null;
 }
 
 /**/

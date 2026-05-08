@@ -25,10 +25,11 @@ const PART = {
 /**/
 const METADATA_VALIDATION_SCHEME = [
 	{ field: 'author', severity: 'error' },
-	{ field: 'audioSrc', severity: 'error' },
+	{ field: 'audio', severity: 'error' },
 	// { field: 'category', severity: 'warning' },
 	{ field: 'date', severity: 'warning' },
 	{ field: 'language', severity: 'error' },
+	{ field: 'record_id', severity: 'warning' },
 	// { field: 'tags', severity: 'warning' },
 	{ field: 'updated', severity: 'error' }
 ];
@@ -49,13 +50,37 @@ function warningLogger(field, slug) {
  *
  */
 function validateMeta(meta, { categories, tags }, filename) {
-	METADATA_VALIDATION_SCHEME.forEach(({ field, severity })=> {
+	const errors = [];
+	const warnings = [];
+
+	METADATA_VALIDATION_SCHEME.forEach(({ field, severity }) => {
 		if (!(field in meta) || !meta[field] || meta[field]?.length === 0) {
-			const ex = `${severity}Logger("${field}", "${filename}")`;
-			eval(ex);
+			if (severity === 'error') {
+				errors.push(`NO ${field.toUpperCase()}`);
+			} else {
+				warnings.push(`NO ${field.toUpperCase()}`);
+			}
 		}
 	});
-	
+
+	if (meta.date && !REGEXP.DATE_REGEXP.test(meta.date)) {
+		warnings.push(`INVALID DATE FORMAT "${meta.date}"`);
+	}
+
+	if ('topic_idx' in meta && meta.topic_idx !== null && typeof meta.topic_idx !== 'string') {
+		warnings.push(`INVALID TYPE for topic_idx (expected string, got ${typeof meta.topic_idx})`);
+	}
+
+	if (errors.length > 0) {
+		const msg = `Error: ${errors.join(', ')} in file "${filename}.md".`;
+		console.error(chalk.blue.bgRed.bold(msg));
+	}
+
+	if (warnings.length > 0) {
+		const msg = `Warning: ${warnings.join(', ')} in file "${filename}.md".`;
+		console.warn(chalk.black.bgYellow.bold(msg));
+	}
+
 	if (meta.category && !categories.includes(meta.category)) {
     const msg = `UNKNOWN CATEGORY "${meta.category}" in file "${filename}.md"!`;
     console.error(chalk.blue.bgRed.bold(msg));

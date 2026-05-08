@@ -34,7 +34,7 @@ JSON_PATH=../fixtures/years.json
 echoImport $JSON_PATH
 mongoimport --uri $DB_URI --type json --jsonArray --mode=upsert --file $JSON_PATH --upsertFields=value --collection years
 
-JSON_PATH=../output/json/years-grouped.json.json
+JSON_PATH=../output/json/years-grouped.json
 echoImport $JSON_PATH
 mongoimport --uri $DB_URI --type json --jsonArray --mode=upsert --file $JSON_PATH --upsertFields=year --collection years-grouped
 

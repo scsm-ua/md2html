@@ -37,7 +37,7 @@ const FILES = {
     FOOTNOTES: 'footnotes.json',
     POSTS: 'posts.json',
     YEARS: 'years.json',
-    YEAR_GROUPED: 'years-grouped.json'
+    YEAR_GROUPED: 'years-grouped'
   },
   STYLES: {
     CSS: 'styles.css'

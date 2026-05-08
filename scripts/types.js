@@ -11,15 +11,17 @@
 
 /**
  * @typedef {Object} PostShort
- * @property {string} audio
+ * @property {{ mp3: string, bytes: number, duration: string } | null} audio
  * @property {string} author
  * @property {string | null} category
  * @property {string} date
  * @property {string} id
  * @property {'ru'} language
+ * @property {string | null} record_id
  * @property {string} slug
  * @property {string[]} tags
  * @property {string} title
+ * @property {string | null} topic_idx
  * @property {string | null} year
  */
 
@@ -44,18 +46,24 @@
 /**
  *  @typedef {Object} MetaParsed
  *  @property {string} author - "Шрила Бхакти Ракшак Шридхар Дев-Госвами Махарадж"
- *  @property {string | null} category - category slug
+ *  @property {{ mp3: string, bytes: number, duration: string } | null} audio
+ *  @property {{ title: string, slug: string } | null} category
+ *  @property {string | null} date - "1982-01-25" or "1982-01"
+ *  @property {{ index: string } | null} [legacy]
+ *  @property {string | null} record_id
  *  @property {string} slug
- *  @property {Array<Link>} links
  *  @property {Array<Tag>} tags
+ *  @property {string | null} [title]
  */
 
 /**
  *  @typedef {Object} MetaProcessed
  *  @property {string} author - "Шрила Бхакти Ракшак Шридхар Дев-Госвами Махарадж"
- *  @property {string | null} audioSrc - "/ru/file_123.mp3"
+ *  @property {{ mp3: string, bytes: number, duration: string } | null} audio
  *  @property {string | null} category - category slug
+ *  @property {string | null} record_id
  *  @property {string} slug
+ *  @property {string | null} topic_idx
  *  @property {string | null} date - "1982-01-25" or "1982-01"
  *  @property {string} language - "ru"
  *  @property {string} updated - "2024-10-16T07:36:17+03:00"
