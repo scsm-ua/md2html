@@ -16,7 +16,7 @@
  * @property {string | null} category
  * @property {string} date
  * @property {string} id
- * @property {'ru'} language
+ * @property {string} language
  * @property {string | null} record_id
  * @property {string} slug
  * @property {string[]} tags
@@ -50,6 +50,7 @@
  *  @property {{ title: string, slug: string } | null} category
  *  @property {string | null} date - "1982-01-25" or "1982-01"
  *  @property {{ index: string } | null} [legacy]
+ *  @property {string | null} lang - "ru"
  *  @property {string | null} record_id
  *  @property {string} slug
  *  @property {Array<Tag>} tags

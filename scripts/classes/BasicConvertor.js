@@ -123,7 +123,7 @@ class BasicConvertor {
 	 * @param data {MetaParsed}
 	 */
 	processMeta(data) {
-		const { author, category, legacy, record_id, slug, tags, audio, date } = data;
+		const { author, category, lang, legacy, record_id, slug, tags, audio, date } = data;
 		const _tags = tags?.map(({ slug }) => slug);
 		
 		this.meta = {
@@ -131,7 +131,7 @@ class BasicConvertor {
 			author,
 			category: category?.slug || null,
 			date,
-			language: 'ru',
+			language: lang || null,
 			record_id: record_id || null,
 			slug,
 			tags: _tags || null,
