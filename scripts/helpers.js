@@ -23,27 +23,27 @@ function getDictionaries() {
   }
 }
 
-
 /**
  * @param ftnNumber {string}
  * @returns {string}
  */
-function getFtnNameByNumber(ftnNumber) {
-  return `ftn${ftnNumber}`;
+function getFtnLinkId(footnote_id) {
+  return `link-${footnote_id}`;
 }
 
-/**
- * @param ftnNumber {string}
- * @returns {string}
- */
-function getFtnLinkIdByNumber(ftnNumber) {
-  return `link-ftn${ftnNumber}`;
+function getFootnoteNumber(footnote_id) {
+  const m = footnote_id.match(/\d+/);
+  if (!m) {
+    throw new Error(`Footnote ${footnote_id} must contain number`);
+  }
+  return m[0];
 }
+
 
 
 /**/
 module.exports = {
   getDictionaries,
-  getFtnNameByNumber,
-  getFtnLinkIdByNumber
+  getFtnLinkId,
+  getFootnoteNumber
 };

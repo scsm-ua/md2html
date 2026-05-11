@@ -13,7 +13,7 @@ const footnotesParser = new Marked({ renderer: footnotesRenderer });
  */
 class ToHTML extends BasicConvertor {
 	/**/
-	processFootnotes(slug) {
+	processFootnotes() {
 		if (this.notesStartPosition < 0 || !this.notesMd) {
 			this.footnotes = '';
 		} else {

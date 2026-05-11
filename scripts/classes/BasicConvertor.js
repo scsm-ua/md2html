@@ -56,7 +56,7 @@ class BasicConvertor {
 		
 		// Order matters!
 		this.extractNotes();
-		this.processFootnotes(meta.slug);
+		this.processFootnotes();
 		this.extractText(textParser);
 		this.processMeta(meta);
 		this.processTitle(meta.title ?? this.extractTitle() ?? meta.record_id ?? '');

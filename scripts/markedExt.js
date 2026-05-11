@@ -1,4 +1,4 @@
-const { getFtnNameByNumber, getFtnLinkIdByNumber } = require('./helpers');
+const { getFtnLinkId, getFootnoteNumber } = require('./helpers');
 const { REGEXP } = require('./const');
 
 /**/
@@ -7,12 +7,13 @@ const TEMPORARY_INSERT = '@#@';
 /**
  * Footnote custom renderer.
  */
+// TODO: how its used?
 function processFootnotes(text) {
-  if (REGEXP.FOOTNOTE_REGEXP.test(text.slice(0, 12))) {
-    const number = REGEXP.FOOTNOTE_REGEXP.exec(text.slice(0, 12))[1];
+  if (REGEXP.FOOTNOTE_REGEXP.test(text)) {
+    const footnote_id = REGEXP.FOOTNOTE_REGEXP.exec(text)[1];
     const ftn = `
-      <a class="Article__link" href="#${getFtnLinkIdByNumber(number)}">
-        [${number}]
+      <a class="Article__link Article__foot-link" href="#${footnote_id}">
+        [${getFootnoteNumber(number)}]
       </a>
     `;
     
@@ -20,7 +21,7 @@ function processFootnotes(text) {
       .replace('.md"', '.html"');
     
     return `
-      <p class="Article__footnote" id="${getFtnNameByNumber(number)}">
+      <p class="Article__footnote" id="${footnote_id}">
         ${_text}
       </p>
     `;
@@ -46,10 +47,10 @@ function processFootnoteLinks(text) {
 /**
  *
  */
-function linkRenderer(_, number) {
+function linkRenderer(_, footnote_id) {
   return `
-    <a class="Article__link Article__foot-link" href="#${getFtnNameByNumber(number)}" id="${getFtnLinkIdByNumber(number)}">
-      [${number}]
+    <a class="Article__link Article__foot-link" href="#${footnote_id}" id="${getFtnLinkId(footnote_id)}">
+      [${getFootnoteNumber(footnote_id)}]
     </a>
   `;
 }
@@ -104,19 +105,19 @@ function processVerse(text) {
   
   const verse = text.slice(0, ftnPosition).trimEnd();
   const ftn = text.slice(ftnPosition);
-  let ftnNumber;
+  let last_footnote_id;
   
-  const anchor = ftn.replaceAll(REGEXP.FOOTNOTE_LINK_REGEXP, (_, number) => {
-    ftnNumber = number;
+  const anchor = ftn.replaceAll(REGEXP.FOOTNOTE_LINK_REGEXP, (_, footnote_id) => {
+    last_footnote_id = footnote_id;
     return `
-      <a class="Article__link Article__foot-link" href="#${getFtnNameByNumber(number)}">
-        [${number}]
+      <a class="Article__link Article__foot-link" href="#${footnote_id}">
+        [${getFootnoteNumber(footnote_id)}]
       </a>
     `;
   });
   
   return `
-    <div class="Article__verse-wrapper" id="${getFtnLinkIdByNumber(ftnNumber)}">
+    <div class="Article__verse-wrapper" id="${getFtnLinkId(last_footnote_id)}">
       <div class="Article__verse">
         <pre><code>${verse}</code></pre>
       </div>
