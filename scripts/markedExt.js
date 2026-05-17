@@ -11,20 +11,12 @@ const TEMPORARY_INSERT = '@#@';
 function processFootnotes(text) {
   if (REGEXP.FOOTNOTE_REGEXP.test(text)) {
     const footnote_id = REGEXP.FOOTNOTE_REGEXP.exec(text)[1];
-    const ftn = `
-      <a class="Article__link Article__foot-link" href="#${footnote_id}">
-        [${getFootnoteNumber(number)}]
-      </a>
-    `;
+    const ftn = `<a class="Article__link Article__foot-link" href="#${footnote_id}">[${getFootnoteNumber(number)}]</a>`;
     
     const _text = text.replace(REGEXP.FOOTNOTE_REGEXP, ftn)
       .replace('.md"', '.html"');
     
-    return `
-      <p class="Article__footnote" id="${footnote_id}">
-        ${_text}
-      </p>
-    `;
+    return `<p class="Article__footnote" id="${footnote_id}">${_text}</p>`;
   }
   
   return `<p>${text}</p>`;
@@ -48,11 +40,7 @@ function processFootnoteLinks(text) {
  *
  */
 function linkRenderer(_, footnote_id) {
-  return `
-    <a class="Article__link Article__foot-link" href="#${footnote_id}" id="${getFtnLinkId(footnote_id)}">
-      [${getFootnoteNumber(footnote_id)}]
-    </a>
-  `;
+  return `<a class="Article__link Article__foot-link" href="#${footnote_id}" id="${getFtnLinkId(footnote_id)}">[${getFootnoteNumber(footnote_id)}]</a>`;
 }
 
 
@@ -109,11 +97,7 @@ function processVerse(text) {
   
   const anchor = ftn.replaceAll(REGEXP.FOOTNOTE_LINK_REGEXP, (_, footnote_id) => {
     last_footnote_id = footnote_id;
-    return `
-      <a class="Article__link Article__foot-link" href="#${footnote_id}">
-        [${getFootnoteNumber(footnote_id)}]
-      </a>
-    `;
+    return `<a class="Article__link Article__foot-link" href="#${footnote_id}">[${getFootnoteNumber(footnote_id)}]</a>`;
   });
   
   return `
