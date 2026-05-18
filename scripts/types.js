@@ -11,7 +11,7 @@
 
 /**
  * @typedef {Object} PostShort
- * @property {{ mp3: string, bytes: number, duration: string } | null} audio
+ * @property {{ src: string, bytes: number, duration: string } | null} audio
  * @property {string} author
  * @property {string | null} category
  * @property {string} date
@@ -46,7 +46,7 @@
 /**
  *  @typedef {Object} MetaParsed
  *  @property {string} author - "Шрила Бхакти Ракшак Шридхар Дев-Госвами Махарадж"
- *  @property {{ mp3: string, bytes: number, duration: string } | null} audio
+ *  @property {{ src: string, bytes: number, duration: string } | null} audio
  *  @property {{ title: string, slug: string } | null} category
  *  @property {string | null} date - "1982-01-25" or "1982-01"
  *  @property {{ index: string } | null} [legacy]
@@ -60,7 +60,7 @@
 /**
  *  @typedef {Object} MetaProcessed
  *  @property {string} author - "Шрила Бхакти Ракшак Шридхар Дев-Госвами Махарадж"
- *  @property {{ mp3: string, bytes: number, duration: string } | null} audio
+ *  @property {{ src: string, bytes: number, duration: string } | null} audio
  *  @property {string | null} category - category slug
  *  @property {string | null} record_id
  *  @property {string} slug
