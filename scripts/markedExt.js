@@ -12,7 +12,7 @@ function processFootnotes(text) {
   if (REGEXP.FOOTNOTE_REGEXP.test(text)) {
     const footnote_id = REGEXP.FOOTNOTE_REGEXP.exec(text)[1];
     // Keep inline to fix whitespaces.
-    const ftn = ` <a class="Article__link Article__foot-link" href="#${footnote_id}">[${getFootnoteNumber(footnote_id)}]</a>`;
+    const ftn = `<a class="Article__link Article__foot-link" href="#${footnote_id}">[${getFootnoteNumber(footnote_id)}]</a>`;
     
     const _text = text.replace(REGEXP.FOOTNOTE_REGEXP, ftn)
       .replace('.md"', '.html"');
@@ -42,7 +42,7 @@ function processFootnoteLinks(text) {
  */
 function linkRenderer(_, footnote_id) {
   // Keep inline to fix whitespaces.
-  return ` <a class="Article__link Article__foot-link" href="#${footnote_id}" id="${getFtnLinkId(footnote_id)}">[${getFootnoteNumber(footnote_id)}]</a>`;
+  return `<a class="Article__link Article__foot-link" href="#${footnote_id}" id="${getFtnLinkId(footnote_id)}">[${getFootnoteNumber(footnote_id)}]</a>`;
 }
 
 
