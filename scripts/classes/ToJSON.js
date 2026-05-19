@@ -2,6 +2,7 @@ const { marked } = require('marked');
 const path = require('path');
 
 const { BasicConvertor } = require('./BasicConvertor');
+const { getFootnoteId } = require('../helpers');
 const { REGEXP } = require('../const');
 
 
@@ -26,7 +27,8 @@ class ToJSON extends BasicConvertor {
 		}
 
 		return {
-			name: footnote_id,
+			// Fixes html element id.
+			name: getFootnoteId(footnote_id),
 			// TODO: filename = slug?
 			slug: footnote_filename,
 			text: marked.parse(item.text),
@@ -48,11 +50,16 @@ class ToJSON extends BasicConvertor {
 
 		if (!allPostFtn) return;
 
-		this.footnotes = Array
-			.from(text.matchAll(REGEXP.FOOTNOTE_LINK_REGEXP))
-			.map(([_, footnote_id]) =>
-				ToJSON.mapFootnote(footnote_id, allPostFtn, rawFtns)
-			);
+		// Some footnotes could be repeated in text.
+		const uniqueIds = [
+			...new Set(
+				Array.from(text.matchAll(REGEXP.FOOTNOTE_LINK_REGEXP), ([_, id]) => id)
+			)
+		];
+
+		this.footnotes = uniqueIds.map((footnote_id) =>
+			ToJSON.mapFootnote(footnote_id, allPostFtn, rawFtns)
+		);
 	}
 	
 	/**

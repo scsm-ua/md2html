@@ -24,11 +24,25 @@ function getDictionaries() {
 }
 
 /**
+ * Footnote link id in bottom footnotes section.
+ * 
  * @param ftnNumber {string}
  * @returns {string}
  */
+function getFootnoteId(footnote_id) {
+  // Fixes html element id (if only digit like id="1").
+  return `f${footnote_id}`;
+}
+
+function getUniqueLinkId(footnote_id, linkIdCounts) {
+  const count = (linkIdCounts.get(footnote_id) ?? 0) + 1;
+  linkIdCounts.set(footnote_id, count);
+  return count === 1 ? getFtnLinkId(footnote_id) : `${getFtnLinkId(footnote_id)}-${count}`;
+}
+
+// Reference link id in text body.
 function getFtnLinkId(footnote_id) {
-  return `link-${footnote_id}`;
+  return `link-${getFootnoteId(footnote_id)}`;
 }
 
 function getFootnoteNumber(footnote_id) {
@@ -44,6 +58,8 @@ function getFootnoteNumber(footnote_id) {
 /**/
 module.exports = {
   getDictionaries,
+  getFootnoteId,
+  getUniqueLinkId,
   getFtnLinkId,
   getFootnoteNumber
 };

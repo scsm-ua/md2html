@@ -2,20 +2,19 @@ const { Marked } = require('marked');
 const { Transform } = require('stream');
 
 /**/
-const { preprocessText, postprocessText, textRenderer } = require('./markedExt');
+const { preprocessText, postprocessText, createTextRenderer } = require('./markedExt');
 const { ToHTML } = require('./classes/ToHTML');
 const { ToJSON } = require('./classes/ToJSON');
 const { validateMeta, validateText } = require('./textValidation');
 
 
 /**/
-const textParser = new Marked({
+const textParserOptions = {
   hooks: {
     preprocess: preprocessText,
     postprocess: postprocessText
-  },
-  renderer: textRenderer
-});
+  }
+};
 
 
 /**
@@ -50,6 +49,7 @@ function convertTextFiles(dictionaries, isJsonMode) {
  * @returns {string}
  */
 function text2html(str, dictionaries, isJsonMode, filename) {
+    const textParser = new Marked({ ...textParserOptions, renderer: createTextRenderer() });
     const convertor = isJsonMode
         ? new ToJSON(str, textParser, dictionaries.footnotesByFile, filename)
         : new ToHTML(str, textParser, dictionaries.footnotesByFile, filename);
