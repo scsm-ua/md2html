@@ -85,7 +85,9 @@ class BasicConvertor {
 			: this.rawText.slice(this.notesStartPosition);
 	}
 	
-	/**/
+	/*
+	Obsolete. Not used now.
+	*/
 	extractTitle() {
 		const firstLine = this.rawText.slice(0, this.rawText.indexOf('\n'));
 		if (!firstLine.trimStart().startsWith('# ')) return null;
@@ -132,10 +134,10 @@ class BasicConvertor {
 			category: category?.slug || null,
 			date,
 			language: lang || null,
-			record_id: record_id || null,
+			recordId: record_id || null,
 			slug,
 			tags: _tags || null,
-			topic_idx: legacy?.index || null,
+			topicIdx: legacy?.index || null,
 			updated: new Date().toISOString(),
 			year: BasicConvertor.extractYear(date)
 		};

@@ -29,7 +29,7 @@ const METADATA_VALIDATION_SCHEME = [
 	// { field: 'category', severity: 'warning' },
 	{ field: 'date', severity: 'warning' },
 	{ field: 'language', severity: 'error' },
-	{ field: 'record_id', severity: 'warning' },
+	{ field: 'recordId', severity: 'warning' },
 	// { field: 'tags', severity: 'warning' },
 	{ field: 'updated', severity: 'error' }
 ];
@@ -67,8 +67,8 @@ function validateMeta(meta, { categories, tags }, filename) {
 		warnings.push(`INVALID DATE FORMAT "${meta.date}"`);
 	}
 
-	if ('topic_idx' in meta && meta.topic_idx !== null && typeof meta.topic_idx !== 'string') {
-		warnings.push(`INVALID TYPE for topic_idx (expected string, got ${typeof meta.topic_idx})`);
+	if ('topicIdx' in meta && meta.topicIdx !== null && typeof meta.topicIdx !== 'string') {
+		warnings.push(`INVALID TYPE for topicIdx (expected string, got ${typeof meta.topicIdx})`);
 	}
 
 	if (errors.length > 0) {
