@@ -44,9 +44,11 @@ class BasicConvertor {
 
 	/**/
 	constructor(dataString, textParser, footnotesByFile, filename) {
-		const [rawMeta, rawText] = dataString.split('---\n')
-			.filter(Boolean)
-			.map((s) => s.trim());
+		const [rawMetaRaw, rawTextRaw] = dataString.split('---\n').filter(Boolean);
+		const rawMeta = rawMetaRaw.trim();
+		// Strip only leading blank lines, not spaces — preserves indentation of the first
+		// content line (e.g. a verse code block that starts the document body).
+		const rawText = rawTextRaw.replace(/^(\s*\n)+/, '').trimEnd();
 		
 		this.rawText = rawText;
 		this.footnotesByFile = footnotesByFile;
