@@ -17,11 +17,11 @@
  * @property {string} date
  * @property {string} id
  * @property {string} language
+ * @property {{ index: string | null, slug: string | null } | null} legacy
  * @property {string | null} recordId
  * @property {string} slug
  * @property {string[]} tags
  * @property {string} title
- * @property {string | null} topicIdx
  * @property {string | null} year
  */
 
@@ -49,7 +49,7 @@
  *  @property {{ src: string, bytes: number, duration: string } | null} audio
  *  @property {{ title: string, slug: string } | null} category
  *  @property {string | null} date - "1982-01-25" or "1982-01"
- *  @property {{ index: string } | null} [legacy]
+ *  @property {{ index: string, slug: string } | null} [legacy]
  *  @property {string | null} lang - "ru"
  *  @property {string | null} record_id
  *  @property {string} slug
@@ -62,9 +62,9 @@
  *  @property {string} author - "Шрила Бхакти Ракшак Шридхар Дев-Госвами Махарадж"
  *  @property {{ src: string, bytes: number, duration: string } | null} audio
  *  @property {string | null} category - category slug
+ *  @property {{ index: string | null, slug: string | null } | null} legacy
  *  @property {string | null} recordId
  *  @property {string} slug
- *  @property {string | null} topicIdx
  *  @property {string | null} date - "1982-01-25" or "1982-01"
  *  @property {string} language - "ru"
  *  @property {string} updated - "2024-10-16T07:36:17+03:00"

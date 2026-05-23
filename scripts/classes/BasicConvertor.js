@@ -129,17 +129,20 @@ class BasicConvertor {
 	processMeta(data) {
 		const { author, category, lang, legacy, record_id, slug, tags, audio, date } = data;
 		const _tags = tags?.map(({ slug }) => slug);
+		const _legacy = (legacy?.slug || legacy?.index)
+			? { index: legacy?.index || null, slug: legacy?.slug || null }
+			: null;
 		
 		this.meta = {
 			audio,
 			author,
 			category: category?.slug || null,
 			date,
+			legacy: _legacy,
 			language: lang || null,
 			recordId: record_id || null,
 			slug,
 			tags: _tags || null,
-			topicIdx: legacy?.index || null,
 			updated: new Date().toISOString(),
 			year: BasicConvertor.extractYear(date)
 		};

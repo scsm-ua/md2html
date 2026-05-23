@@ -81,7 +81,7 @@ function createEmptyYearsMap(years) {
  */
 function mapShortPostDoc(doc) {
 	const { id, meta, title } = doc;
-	const { audio, author, category, date, language, recordId, slug, tags, topicIdx, year } =
+	const { audio, author, category, date, language, legacy, recordId, slug, tags, year } =
 		/** @type {MetaProcessed} */meta;
 	
 	return {
@@ -91,11 +91,11 @@ function mapShortPostDoc(doc) {
 		date,
 		id,
 		language,
+		legacy,
 		recordId,
 		slug,
 		tags,
 		title,
-		topicIdx,
 		year
 	};
 }

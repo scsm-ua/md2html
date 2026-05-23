@@ -67,8 +67,12 @@ function validateMeta(meta, { categories, tags }, filename) {
 		warnings.push(`INVALID DATE FORMAT "${meta.date}"`);
 	}
 
-	if ('topicIdx' in meta && meta.topicIdx !== null && typeof meta.topicIdx !== 'string') {
-		warnings.push(`INVALID TYPE for topicIdx (expected string, got ${typeof meta.topicIdx})`);
+	if (meta.legacy?.index !== undefined && meta.legacy.index !== null && typeof meta.legacy.index !== 'string') {
+		warnings.push(`INVALID TYPE for legacy.index (expected string, got ${typeof meta.legacy.index})`);
+	}
+
+	if (meta.legacy?.slug !== undefined && meta.legacy.slug !== null && typeof meta.legacy.slug !== 'string') {
+		warnings.push(`INVALID TYPE for legacy.slug (expected string, got ${typeof meta.legacy.slug})`);
 	}
 
 	if (errors.length > 0) {
