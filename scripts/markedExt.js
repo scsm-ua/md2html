@@ -1,13 +1,14 @@
 const { getFootnoteId, getUniqueLinkId, getFtnLinkId, getFootnoteNumber } = require('./helpers');
 const { REGEXP } = require('./const');
 
-/**/
+// Placeholder injected after verse blocks so marked doesn't wrap them in <p> tags.
 const TEMPORARY_INSERT = '@#@';
 
 /**
- * Footnote custom renderer.
+ * Paragraph renderer for footnote definitions ([^id]: ...).
+ * Used in ToHTML.js as footnotesRenderer.paragraph.
+ * Wraps each definition in <p id="fN"> so back-links can scroll to it.
  */
-// TODO: how its used?
 function processFootnotes(text) {
   if (REGEXP.FOOTNOTE_REGEXP.test(text)) {
     const footnote_id = REGEXP.FOOTNOTE_REGEXP.exec(text)[1];
@@ -17,7 +18,6 @@ function processFootnotes(text) {
     const _text = text.replace(REGEXP.FOOTNOTE_REGEXP, ftn)
       .replace('.md"', '.html"');
     
-    // TOOD: can we use `getUniqueLinkId`?
     return `<p class="Article__footnote" id="${getFootnoteId(footnote_id)}">${_text}</p>`;
   }
   
@@ -26,17 +26,19 @@ function processFootnotes(text) {
 
 
 /**
- * Creates a stateful text renderer. Must be called once per document so the
- * seenLinkIds Set resets between files.
+ * Creates a renderer for article body text. Call once per document.
+ * linkIdCounts tracks per-footnote reference counts so each back-link
+ * gets a unique id: link-fN, link-fN-2, link-fN-3, …
  */
 function createTextRenderer() {
   const linkIdCounts = new Map();
 
+  // [^id] → <a> back-link. Inline to avoid extra whitespace.
   function linkRenderer(_, footnote_id) {
-    // Keep inline to fix whitespaces.
     return `<a class="Article__link Article__foot-link" href="#${getFootnoteId(footnote_id)}" id="${getUniqueLinkId(footnote_id, linkIdCounts)}">[${getFootnoteNumber(footnote_id)}]</a>`;
   }
 
+  // Paragraph renderer: replaces [^id] markers with anchors.
   function processFootnoteLinks(text) {
     if (REGEXP.FOOTNOTE_LINK_REGEXP.test(text)) {
       const update = text.replaceAll(REGEXP.FOOTNOTE_LINK_REGEXP, linkRenderer);
@@ -46,6 +48,9 @@ function createTextRenderer() {
     return `<p>${text}</p>`;
   }
 
+  // Code block renderer for verse blocks (fenced code in markdown).
+  // A trailing [^id] is split off into a citation div; the wrapper div
+  // gets the back-link id via linkIdCounts.
   function processVerse(text) {
     const ftnPosition = text.search(REGEXP.FOOTNOTE_LINK_REGEXP);
 
@@ -59,9 +64,10 @@ function createTextRenderer() {
     const ftn = text.slice(ftnPosition);
     let last_footnote_id;
 
+    // Citation links have no individual id — the wrapper div carries it.
     const anchor = ftn.replaceAll(REGEXP.FOOTNOTE_LINK_REGEXP, (_, footnote_id) => {
       last_footnote_id = footnote_id;
-      // Keep inline to fix whitespaces.
+      // Keep inline to avoid extra whitespace.
       return `<a class="Article__link Article__foot-link" href="#${getFootnoteId(footnote_id)}">[${getFootnoteNumber(footnote_id)}]</a>`;
     });
 
@@ -85,17 +91,13 @@ function createTextRenderer() {
 }
 
 
-/**
- * Ignore H1 tag.
- */
+// Heading renderer. H1 is rendered separately as the post title, so suppress it.
 function ignoreTitle(text, depth) {
   return depth === 1 ? '' : `<h${depth}>${text}</h${depth}>`;
 }
 
 
-/**
- * Emphasis custom renderer. Sets 'class' attribute over timestamps and the rest of EM tags.
- */
+// Emphasis renderer. *#HH:MM:SS#* → <em data-type="time">; all other <em> pass through.
 function markTimeStamps(text) {
   return text.startsWith('#') && text.endsWith('#')
     ? `<em data-type="time">${text}</em>`
@@ -103,9 +105,8 @@ function markTimeStamps(text) {
 }
 
 
-/**
- *
- */
+// Pre-pass: joins trailing footnote refs onto verse code blocks and appends
+// TEMPORARY_INSERT so the leftover <p> can be stripped in postprocessText.
 function preprocessText(markdown) {
   return markdown.replaceAll(REGEXP.VERSE_FOOTNOTE_REGEXP, (match) =>
     match.replace('\n', ' ') + '\r' + TEMPORARY_INSERT
@@ -113,9 +114,7 @@ function preprocessText(markdown) {
 }
 
 
-/**
- *
- */
+// Post-pass: removes the sentinel <p> tags injected by preprocessText.
 function postprocessText(html) {
   return html.replaceAll(`<p>${TEMPORARY_INSERT}</p>`, '');
 }
