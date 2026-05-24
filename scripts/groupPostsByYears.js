@@ -81,16 +81,18 @@ function createEmptyYearsMap(years) {
  */
 function mapShortPostDoc(doc) {
 	const { id, meta, title } = doc;
-	const { audioSrc, author, category, date, language, slug, tags, year } =
+	const { audio, author, category, date, language, legacy, recordId, slug, tags, year } =
 		/** @type {MetaProcessed} */meta;
 	
 	return {
-		audio: audioSrc,
+		audio,
 		author,
 		category,
 		date,
 		id,
 		language,
+		legacy,
+		recordId,
 		slug,
 		tags,
 		title,
@@ -131,7 +133,8 @@ function sortMonths({ months, year }) {
 	result.push(result.shift()); // This puts '00' month to the end.
 	
 	return {
-		year: year,
+		// Set `0000` for import upsert update by year. `null` not working for that.
+		year: year ?? '0000',
 		months: result.map(handleMonth).filter(Boolean)
 	};
 }

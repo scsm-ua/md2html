@@ -23,46 +23,43 @@ function getDictionaries() {
   }
 }
 
-
 /**
- * Example output: 2013-07-01T17:55:13-07:00
- */
-function toIsoDateWithTimezone(date) {
-  const tzo = -date.getTimezoneOffset();
-  const dif = tzo >= 0 ? '+' : '-';
-  const pad = (num) =>(num < 10 ? '0' : '') + num;
-  
-  return date.getFullYear() +
-    '-' + pad(date.getMonth() + 1) +
-    '-' + pad(date.getDate()) +
-    'T' + pad(date.getHours()) +
-    ':' + pad(date.getMinutes()) +
-    ':' + pad(date.getSeconds()) +
-    dif + pad(Math.floor(Math.abs(tzo) / 60)) +
-    ':' + pad(Math.abs(tzo) % 60);
-}
-
-/**
+ * Footnote link id in bottom footnotes section.
+ * 
  * @param ftnNumber {string}
  * @returns {string}
  */
-function getFtnNameByNumber(ftnNumber) {
-  return `ftn${ftnNumber}`;
+function getFootnoteId(footnote_id) {
+  // Fixes html element id (if only digit like id="1").
+  return `f${footnote_id}`;
 }
 
-/**
- * @param ftnNumber {string}
- * @returns {string}
- */
-function getFtnLinkIdByNumber(ftnNumber) {
-  return `link-ftn${ftnNumber}`;
+function getUniqueLinkId(footnote_id, linkIdCounts) {
+  const count = (linkIdCounts.get(footnote_id) ?? 0) + 1;
+  linkIdCounts.set(footnote_id, count);
+  return count === 1 ? getFtnLinkId(footnote_id) : `${getFtnLinkId(footnote_id)}-${count}`;
 }
+
+// Reference link id in text body.
+function getFtnLinkId(footnote_id) {
+  return `link-${getFootnoteId(footnote_id)}`;
+}
+
+function getFootnoteNumber(footnote_id) {
+  const m = footnote_id.match(/\d+/);
+  if (!m) {
+    throw new Error(`Footnote ${footnote_id} must contain number`);
+  }
+  return m[0];
+}
+
 
 
 /**/
 module.exports = {
   getDictionaries,
-  getFtnNameByNumber,
-  getFtnLinkIdByNumber,
-  toIsoDateWithTimezone
+  getFootnoteId,
+  getUniqueLinkId,
+  getFtnLinkId,
+  getFootnoteNumber
 };

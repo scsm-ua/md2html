@@ -2,7 +2,7 @@ const { marked } = require('marked');
 const path = require('path');
 
 const { BasicConvertor } = require('./BasicConvertor');
-const { getFtnNameByNumber } = require('../helpers');
+const { getFootnoteId } = require('../helpers');
 const { REGEXP } = require('../const');
 
 
@@ -16,24 +16,28 @@ class ToJSON extends BasicConvertor {
 	 * @param rawFtns {Array<string>}
 	 * @return {FootnoteItemHtml}
 	 */
-	static mapFootnote(ftnNumber, allPostFtn, rawFtns) {
-		const ftnName = '_' + getFtnNameByNumber(ftnNumber);
-		const item = allPostFtn.items.find(({ name }) => name === ftnName);
-		const rawItem = rawFtns.find((raw) => raw.includes(ftnName));
+	static mapFootnote(footnote_id, allPostFtn, rawFtns) {
+		const item = allPostFtn.items.find(({ name }) => name === footnote_id);
+		const rawItem = rawFtns.find((raw) => raw.includes(footnote_id));
 
-		const res = REGEXP.FOOTNOTE_PATH.exec(rawItem);
-		const slug = res ? path.parse(res[0]).name : null;
+		const footnote_filepath_match = REGEXP.FOOTNOTE_PATH.exec(rawItem);
+		let footnote_filename = null;
+		if (footnote_filepath_match) {
+			footnote_filename = path.parse(footnote_filepath_match[0]).name;
+		}
 
 		return {
-			name: item.name.replace('_', ''),
-			slug: slug,
+			// Fixes html element id.
+			name: getFootnoteId(footnote_id),
+			// TODO: filename = slug?
+			slug: footnote_filename,
 			text: marked.parse(item.text),
 			title: item.title
 		};
 	}
 	
 	/**/
-	processFootnotes(slug) {
+	processFootnotes() {
 		const rawFtns = this.notesMd.split('\n');
 
 		const text = this.notesStartPosition < 0
@@ -41,16 +45,21 @@ class ToJSON extends BasicConvertor {
 			: this.rawText.slice(0, this.notesStartPosition).trimEnd();
 
 		const allPostFtn = this.footnotesByFile.find(
-			({ path }) => path.includes(slug)
+			({ path }) => path.includes(`${this.filename}.md`)
 		);
 
 		if (!allPostFtn) return;
 
-		this.footnotes = Array
-			.from(text.matchAll(REGEXP.FOOTNOTE_LINK_REGEXP))
-			.map(([_, ftnNumber]) =>
-				ToJSON.mapFootnote(ftnNumber, allPostFtn, rawFtns)
-			);
+		// Some footnotes could be repeated in text.
+		const uniqueIds = [
+			...new Set(
+				Array.from(text.matchAll(REGEXP.FOOTNOTE_LINK_REGEXP), ([_, id]) => id)
+			)
+		];
+
+		this.footnotes = uniqueIds.map((footnote_id) =>
+			ToJSON.mapFootnote(footnote_id, allPostFtn, rawFtns)
+		);
 	}
 	
 	/**

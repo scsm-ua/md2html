@@ -13,12 +13,12 @@ const footnotesParser = new Marked({ renderer: footnotesRenderer });
  */
 class ToHTML extends BasicConvertor {
 	/**/
-	processFootnotes(slug) {
+	processFootnotes() {
 		if (this.notesStartPosition < 0 || !this.notesMd) {
 			this.footnotes = '';
 		} else {
 			const str = format(footnotesParser.parse(this.notesMd).replace(/^\s+|\s+$/gi, ''));
-			validateFtn(str, slug);
+			validateFtn(str, this.filename);
 			this.footnotes = str;
 		}
 	}

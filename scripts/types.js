@@ -11,12 +11,14 @@
 
 /**
  * @typedef {Object} PostShort
- * @property {string} audio
+ * @property {{ src: string, bytes: number, duration: string } | null} audio
  * @property {string} author
- * @property {string} category
+ * @property {string | null} category
  * @property {string} date
  * @property {string} id
- * @property {'ru'} language
+ * @property {string} language
+ * @property {{ index: string | null, slug: string | null } | null} legacy
+ * @property {string | null} recordId
  * @property {string} slug
  * @property {string[]} tags
  * @property {string} title
@@ -44,17 +46,24 @@
 /**
  *  @typedef {Object} MetaParsed
  *  @property {string} author - "Шрила Бхакти Ракшак Шридхар Дев-Госвами Махарадж"
- *  @property {string} category - category slug
+ *  @property {{ src: string, bytes: number, duration: string } | null} audio
+ *  @property {{ title: string, slug: string } | null} category
+ *  @property {string | null} date - "1982-01-25" or "1982-01"
+ *  @property {{ index: string, slug: string } | null} [legacy]
+ *  @property {string | null} lang - "ru"
+ *  @property {string | null} record_id
  *  @property {string} slug
- *  @property {Array<Link>} links
  *  @property {Array<Tag>} tags
+ *  @property {string | null} [title]
  */
 
 /**
  *  @typedef {Object} MetaProcessed
  *  @property {string} author - "Шрила Бхакти Ракшак Шридхар Дев-Госвами Махарадж"
- *  @property {string | null} audioSrc - "/ru/file_123.mp3"
- *  @property {string} category - category slug
+ *  @property {{ src: string, bytes: number, duration: string } | null} audio
+ *  @property {string | null} category - category slug
+ *  @property {{ index: string | null, slug: string | null } | null} legacy
+ *  @property {string | null} recordId
  *  @property {string} slug
  *  @property {string | null} date - "1982-01-25" or "1982-01"
  *  @property {string} language - "ru"

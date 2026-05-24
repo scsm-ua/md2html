@@ -25,11 +25,12 @@ const PART = {
 /**/
 const METADATA_VALIDATION_SCHEME = [
 	{ field: 'author', severity: 'error' },
-	{ field: 'audioSrc', severity: 'error' },
-	{ field: 'category', severity: 'error' },
+	{ field: 'audio', severity: 'error' },
+	// { field: 'category', severity: 'warning' },
 	{ field: 'date', severity: 'warning' },
 	{ field: 'language', severity: 'error' },
-	{ field: 'tags', severity: 'warning' },
+	{ field: 'recordId', severity: 'warning' },
+	// { field: 'tags', severity: 'warning' },
 	{ field: 'updated', severity: 'error' }
 ];
 
@@ -48,16 +49,44 @@ function warningLogger(field, slug) {
 /**
  *
  */
-function validateMeta(meta, { categories, tags }) {
-	METADATA_VALIDATION_SCHEME.forEach(({ field, severity })=> {
+function validateMeta(meta, { categories, tags }, filename) {
+	const errors = [];
+	const warnings = [];
+
+	METADATA_VALIDATION_SCHEME.forEach(({ field, severity }) => {
 		if (!(field in meta) || !meta[field] || meta[field]?.length === 0) {
-			const ex = `${severity}Logger("${field}", "${meta.slug}")`;
-			eval(ex);
+			if (severity === 'error') {
+				errors.push(`NO ${field.toUpperCase()}`);
+			} else {
+				warnings.push(`NO ${field.toUpperCase()}`);
+			}
 		}
 	});
-	
-	if (!categories.includes(meta.category)) {
-    const msg = `UNKNOWN CATEGORY "${meta.category}" in file "${meta.slug}.md"!`;
+
+	if (meta.date && !REGEXP.DATE_REGEXP.test(meta.date)) {
+		warnings.push(`INVALID DATE FORMAT "${meta.date}"`);
+	}
+
+	if (meta.legacy?.index !== undefined && meta.legacy.index !== null && typeof meta.legacy.index !== 'string') {
+		warnings.push(`INVALID TYPE for legacy.index (expected string, got ${typeof meta.legacy.index})`);
+	}
+
+	if (meta.legacy?.slug !== undefined && meta.legacy.slug !== null && typeof meta.legacy.slug !== 'string') {
+		warnings.push(`INVALID TYPE for legacy.slug (expected string, got ${typeof meta.legacy.slug})`);
+	}
+
+	if (errors.length > 0) {
+		const msg = `Error: ${errors.join(', ')} in file "${filename}.md".`;
+		console.error(chalk.blue.bgRed.bold(msg));
+	}
+
+	if (warnings.length > 0) {
+		const msg = `Warning: ${warnings.join(', ')} in file "${filename}.md".`;
+		console.warn(chalk.black.bgYellow.bold(msg));
+	}
+
+	if (meta.category && !categories.includes(meta.category)) {
+    const msg = `UNKNOWN CATEGORY "${meta.category}" in file "${filename}.md"!`;
     console.error(chalk.blue.bgRed.bold(msg));
     throw new Error("Encountered unknown category!");
   }
@@ -65,7 +94,7 @@ function validateMeta(meta, { categories, tags }) {
   const invalidTag = meta.tags?.find((tag) => !tags.includes(tag));
   
   if (invalidTag) {
-    const msg = `UNKNOWN TAG "${invalidTag}" in file "${meta.slug}.md"!`;
+    const msg = `UNKNOWN TAG "${invalidTag}" in file "${filename}.md"!`;
     console.error(chalk.blue.bgRed.bold(msg));
     throw new Error("Encountered unknown tag!");
   }
@@ -75,12 +104,12 @@ function validateMeta(meta, { categories, tags }) {
 /**
  *
  */
-function validateText(text, slug) {
+function validateText(text, filename) {
   const pos = text.search(REGEXP.FOOTNOTE_LINK_REGEXP);
-  validateHtml(text, PART.MAIN_TEXT, slug);
+  validateHtml(text, PART.MAIN_TEXT, filename);
   
   if (pos >= 0) {
-    const msg = `MALFORMED LINK at position ${pos} for source file "${slug}.md"!`;
+    const msg = `MALFORMED LINK at position ${pos} for source file "${filename}.md"!`;
     console.error(chalk.blue.bgRed.bold(msg));
   }
 }
@@ -89,12 +118,12 @@ function validateText(text, slug) {
 /**
  *
  */
-function validateFtn(text, slug) {
+function validateFtn(text, filename) {
   const pos = text.search(REGEXP.FOOTNOTE_REGEXP);
-  validateHtml(text, PART.FOOTNOTES, slug);
+  validateHtml(text, PART.FOOTNOTES, filename);
   
   if (pos >= 0) {
-    const msg = `MALFORMED FOOTNOTES for source file "${slug}.md"!`;
+    const msg = `MALFORMED FOOTNOTES for source file "${filename}.md"!`;
     console.error(chalk.blue.bgRed.bold(msg));
     console.log(text);
   }
@@ -104,12 +133,12 @@ function validateFtn(text, slug) {
 /**
  *
  */
-function validateHtml(str, part, slug) {
+function validateHtml(str, part, filename) {
   htmlValidate.validateString(str)
     .then((report)=> {
       if (report.valid) return;
       
-      console.warn(chalk.black.bgGray.bold(`Issue in ${part} rendering. Source file: "${slug}.md":`));
+      console.warn(chalk.black.bgGray.bold(`Issue in ${part} rendering. Source file: "${filename}.md":`));
       console.log(formatReport(report.results));
     })
     .catch(console.error);

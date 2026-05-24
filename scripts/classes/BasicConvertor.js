@@ -1,9 +1,9 @@
+const chalk = require('chalk');
 const format = require('html-format');
 const yaml = require('yaml');
 
 /**/
 const { REGEXP } = require('../const');
-const { toIsoDateWithTimezone } = require('../helpers');
 
 /**/
 const articleNumberRegEx = /^(\d+\.)\s/;
@@ -33,31 +33,40 @@ class BasicConvertor {
 	 * @return {string}
 	 */
 	static extractYear(date) {
-		const [year] = (date || '').split('-');
+		const [yearStr] = (date || '').split('-');
+		const year = Number(yearStr);
 		const isYearOk = year && (
 			year <= ARCHIVE_CHRONOLOGY.MAX ||
 			year >= ARCHIVE_CHRONOLOGY.MIN
 		);
-		return isYearOk ? year : null;
+		return isYearOk ? yearStr : null;
 	}
 
 	/**/
-	constructor(dataString, textParser, footnotesByFile) {
-		const [rawMeta, rawText] = dataString.split('---\n')
-			.filter(Boolean)
-			.map((s) => s.trim());
+	constructor(dataString, textParser, footnotesByFile, filename) {
+		const [rawMetaRaw, rawTextRaw] = dataString.split('---\n').filter(Boolean);
+		const rawMeta = rawMetaRaw.trim();
+		// Strip only leading blank lines, not spaces — preserves indentation of the first
+		// content line (e.g. a verse code block that starts the document body).
+		const rawText = rawTextRaw.replace(/^(\s*\n)+/, '').trimEnd();
 		
 		this.rawText = rawText;
 		this.footnotesByFile = footnotesByFile;
+		this.filename = filename;
 		this.notesStartPosition = rawText.search(REGEXP.FOOTNOTES_BEGINNING_REGEXP);
 		const meta = yaml.parse(rawMeta);
 		
 		// Order matters!
 		this.extractNotes();
-		this.processFootnotes(meta.slug);
+		this.processFootnotes();
 		this.extractText(textParser);
 		this.processMeta(meta);
-		this.processTitle(this.extractTitle());
+		this.processTitle(meta.title ?? this.extractTitle() ?? meta.record_id ?? '');
+		
+		if (!this.title) {
+			const msg = `Error: NO TITLE in file "${this.filename}.md".`;
+			console.error(chalk.blue.bgRed.bold(msg));
+		}
 	}
 	
 	/**
@@ -78,11 +87,13 @@ class BasicConvertor {
 			: this.rawText.slice(this.notesStartPosition);
 	}
 	
-	/**/
+	/*
+	Obsolete. Not used now.
+	*/
 	extractTitle() {
-		return format(
-			this.rawText.slice(0, this.rawText.indexOf('\n')).replace('#', '')
-		);
+		const firstLine = this.rawText.slice(0, this.rawText.indexOf('\n'));
+		if (!firstLine.trimStart().startsWith('# ')) return null;
+		return format(firstLine.replace('# ', ''));
 	}
 	
 	/**/
@@ -116,22 +127,23 @@ class BasicConvertor {
 	 * @param data {MetaParsed}
 	 */
 	processMeta(data) {
-		const { author, category, links, slug, tags } = data;
-		const audio = links?.find(({ href }) => href.trimEnd().endsWith('.mp3'));
-		
-		const audioSrc = audio?.href || null;
-		const date = extractDate(this.title, tags);
+		const { author, category, lang, legacy, record_id, slug, tags, audio, date } = data;
 		const _tags = tags?.map(({ slug }) => slug);
+		const _legacy = (legacy?.slug || legacy?.index)
+			? { index: legacy?.index || null, slug: legacy?.slug || null }
+			: null;
 		
 		this.meta = {
-			audioSrc,
+			audio,
 			author,
-			category: category.slug,
-			date: date,
-			language: 'ru',
+			category: category?.slug || null,
+			date,
+			legacy: _legacy,
+			language: lang || null,
+			recordId: record_id || null,
 			slug,
 			tags: _tags || null,
-			updated: toIsoDateWithTimezone(new Date()),
+			updated: new Date().toISOString(),
 			year: BasicConvertor.extractYear(date)
 		};
 	}
@@ -156,20 +168,6 @@ class BasicConvertor {
 	processFootnotes() {
 		throw new ReferenceError('Method "processFootnotes" has NOT been implemented!');
 	};
-}
-
-
-/**
- *
- */
-function extractDate(title, tags) {
-	const res = REGEXP.FULL_DATE_REGEXP.exec(title);
-	if (res && res[1]) return res[1].replaceAll('.', '-'); // 1982.01.25 -> 1982-01-25
-	
-	const tag = tags?.find((item) => REGEXP.DATE_REGEXP.test(item.slug));
-	return tag
-		? tag.slug.replaceAll('.', '-') // 1982-01
-		: null;
 }
 
 /**/

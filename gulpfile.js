@@ -16,7 +16,8 @@ const { groupPostsByYears } = require('./scripts/groupPostsByYears');
  */
 gulp.task('text-json', () => {
   return gulp
-    .src(GLOBS.POSTS)
+    // follow: true — follow symlink.
+    .src(GLOBS.POSTS, { follow: true })
     .pipe(convertTextFiles(getDictionaries(), true))
     .pipe(
       rename({ extname: '.json' })
@@ -35,7 +36,8 @@ gulp.task('text-json', () => {
  */
 gulp.task('text-html', () => {
   return gulp
-    .src(GLOBS.POSTS)
+    // follow: true — follow symlink.
+    .src(GLOBS.POSTS, { follow: true })
     .pipe(convertTextFiles(getDictionaries()))
     .pipe(
       rename({ extname: '.html' })
@@ -49,7 +51,8 @@ gulp.task('text-html', () => {
  */
 gulp.task('ftn-json', () => {
   return gulp
-    .src(GLOBS.NOTES)
+    // follow: true — follow symlink.
+    .src(GLOBS.NOTES, { follow: true })
     .pipe(convertFtnFiles(true))
     .pipe(
       rename({ extname: '.json' })
@@ -65,7 +68,8 @@ gulp.task('ftn-json', () => {
  */
 gulp.task('ftn-html', () => {
   return gulp
-    .src(GLOBS.NOTES)
+    // follow: true — follow symlink.
+    .src(GLOBS.NOTES, { follow: true })
     .pipe(convertFtnFiles())
     .pipe(
       rename({ extname: '.html' })
