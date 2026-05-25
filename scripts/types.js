@@ -10,19 +10,11 @@
  */
 
 /**
- * @typedef {Object} PostShort
- * @property {{ src: string, bytes: number, duration: string } | null} audio
- * @property {string} author
- * @property {string | null} category
- * @property {string} date
- * @property {string} id
- * @property {string} language
- * @property {{ index: string | null, slug: string | null } | null} legacy
+ * @typedef {Object} GroupedYearsPostShort
+ * @property {{ src: string, duration: string } | null} audio
  * @property {string | null} recordId
  * @property {string} slug
- * @property {string[]} tags
  * @property {string} title
- * @property {string | null} year
  */
 
 /**

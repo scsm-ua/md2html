@@ -77,26 +77,18 @@ function createEmptyYearsMap(years) {
 
 /**
  * @param {Post} doc
- * @return {PostShort}
+ * @return {GroupedYearsPostShort}
  */
 function mapShortPostDoc(doc) {
-	const { id, meta, title } = doc;
-	const { audio, author, category, date, language, legacy, recordId, slug, tags, year } =
+	const { meta, title } = doc;
+	const { audio, recordId, slug } =
 		/** @type {MetaProcessed} */meta;
 	
 	return {
-		audio,
-		author,
-		category,
-		date,
-		id,
-		language,
-		legacy,
+		audio: audio ? { src: audio.src, duration: audio.duration } : null,
 		recordId,
 		slug,
-		tags,
-		title,
-		year
+		title
 	};
 }
 
@@ -146,10 +138,10 @@ function sortMonths({ months, year }) {
 function handleMonth(item) {
 	if (item.records.length === 0) return null;
 	
-	item.records.sort((/** @type {PostShort} */ a, /** @type {PostShort} */ b) =>
-		typeof a.date === 'string' &&
-		typeof b.date === 'string' &&
-		a.date.localeCompare(b.date)
+	item.records.sort((/** @type {GroupedYearsPostShort} */ a, /** @type {GroupedYearsPostShort} */ b) =>
+		typeof a.slug === 'string' &&
+		typeof b.slug === 'string' &&
+		a.slug.localeCompare(b.slug)
 	);
 	
 	return item;
