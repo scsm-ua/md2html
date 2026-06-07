@@ -13,9 +13,33 @@ const yaml = require('yaml');
  * @returns {Transform}
  */
 function buildScriptures() {
+  const parseMetaAndBody = (content) => {
+    const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
+    if (!match) {
+      return { meta: null, body: '' };
+    }
+
+    return {
+      meta: yaml.parse(match[1].trim()),
+      body: match[2] || ''
+    };
+  };
+
+  const extractFirstItalicSection = (body) => {
+    const match = body.match(/(?:^|[\s(>])\*([^*\n][^*]*?)\*(?=$|[\s,.;:!?)}\]])/u);
+    if (!match) {
+      return null;
+    }
+
+    const quote = match[1].trim();
+    const wordsCount = quote.split(/[-\s]+/u).filter(Boolean).length;
+
+    return wordsCount > 2 ? quote : null;
+  };
+
   /**
-   * @type {Map<string, { title: string, versesMap: Map<string, string> }>}
-   * scriptureSlug -> { title, versesMap: verseSlug -> verseDisplayTitle }
+   * @type {Map<string, { title: string, versesMap: Map<string, { title: string, quote: string | null }> }>}
+   * scriptureSlug -> { title, versesMap: verseSlug -> { title, quote } }
    */
   const scripturesMap = new Map();
 
@@ -25,11 +49,11 @@ function buildScriptures() {
     transform(file, encoding, callback) {
       try {
         const content = file.contents.toString();
-        const [rawMeta] = content.split('---\n').filter(Boolean);
-        const meta = yaml.parse(rawMeta.trim());
+        const { meta, body } = parseMetaAndBody(content);
 
         const scriptures = meta?.scriptures;
         const verses = meta?.verses;
+        const quote = extractFirstItalicSection(body);
 
         if (!Array.isArray(scriptures) || !Array.isArray(verses)) {
           callback();
@@ -62,7 +86,10 @@ function buildScriptures() {
               ? verse.title.slice(prefix.length).trim()
               : verse.title;
 
-            versesMap.set(verse.slug, displayTitle);
+            versesMap.set(verse.slug, {
+              title: displayTitle,
+              quote
+            });
           }
         }
 
@@ -75,8 +102,8 @@ function buildScriptures() {
 
     flush(callback) {
       const compareVerses = ([, titleA], [, titleB]) => {
-        const partsA = titleA.split(/[.\-–]/).map(Number);
-        const partsB = titleB.split(/[.\-–]/).map(Number);
+        const partsA = titleA.title.split(/[.\-–]/).map(Number);
+        const partsB = titleB.title.split(/[.\-–]/).map(Number);
         for (let i = 0; i < Math.max(partsA.length, partsB.length); i++) {
           const a = partsA[i] ?? 0;
           const b = partsB[i] ?? 0;
@@ -85,14 +112,42 @@ function buildScriptures() {
         return 0;
       };
 
+      const normalizeTitleForSort = (title) => {
+        const trimmed = String(title || '').trim();
+        const stripped = trimmed.replace(/^[^\p{L}\p{N}]+/u, '');
+        return stripped || trimmed;
+      };
+
+      /** @type {Array<Scripture>} */
       const scriptures = Array.from(scripturesMap.entries())
-        .sort(([a], [b]) => a.localeCompare(b))
+        .sort((a, b) => {
+          const [, scriptureA] = a;
+          const [, scriptureB] = b;
+          const titleA = normalizeTitleForSort(scriptureA.title);
+          const titleB = normalizeTitleForSort(scriptureB.title);
+          const byTitle = titleA.localeCompare(titleB, 'ru', { sensitivity: 'base' });
+          if (byTitle !== 0) {
+            return byTitle;
+          }
+
+          const byOriginalTitle = scriptureA.title.localeCompare(scriptureB.title, 'ru', { sensitivity: 'base' });
+          if (byOriginalTitle !== 0) {
+            return byOriginalTitle;
+          }
+
+          // Keep output deterministic when titles are equal.
+          return a[0].localeCompare(b[0]);
+        })
         .map(([slug, { title, versesMap }]) => ({
           slug,
           title,
           verses: Array.from(versesMap.entries())
             .sort(compareVerses)
-            .map(([slug, title]) => ({ slug, title }))
+            .map(([slug, verseData]) => ({
+              slug,
+              title: verseData.title,
+              quote: verseData.quote
+            }))
         }));
 
       this.push(new Vinyl({

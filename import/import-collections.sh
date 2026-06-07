@@ -26,6 +26,10 @@ JSON_PATH=../output/json/posts.json
 echoImport $JSON_PATH
 mongoimport --uri $DB_URI --type json --jsonArray --mode=upsert --file $JSON_PATH --upsertFields=meta.slug --collection posts
 
+JSON_PATH=../output/json/scriptures.json
+echoImport $JSON_PATH
+mongoimport --uri $DB_URI --type json --jsonArray --mode=upsert --file $JSON_PATH --upsertFields=slug --collection scriptures
+
 JSON_PATH=../output/json/tags.json
 echoImport $JSON_PATH
 mongoimport --uri $DB_URI --type json --jsonArray --mode=upsert --file $JSON_PATH --upsertFields=slug --collection tags

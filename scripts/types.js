@@ -68,6 +68,20 @@
 /* Dictionaries */
 
 /**
+ * @typedef {Object} ScriptureVerse
+ * @property {string} slug
+ * @property {string} title
+ * @property {string | null} quote
+ */
+
+/**
+ * @typedef {Object} Scripture
+ * @property {string} slug
+ * @property {string} title
+ * @property {Array<ScriptureVerse>} verses
+ */
+
+/**
  * @typedef {Object} Dictionaries
  * @property {Array<string>} categories - slugs of the categories.
  * @property {Array<FootnotesByFile>} footnotesByFile
