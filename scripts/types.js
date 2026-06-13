@@ -72,6 +72,7 @@
  * @property {string} slug
  * @property {string} title
  * @property {string | null} quote
+ * @property {number} refsCount
  */
 
 /**
@@ -83,7 +84,6 @@
 
 /**
  * @typedef {Object} Dictionaries
- * @property {Array<string>} categories - slugs of the categories.
  * @property {Array<FootnotesByFile>} footnotesByFile
  * @property {Array<string>} tags - slugs of the tags.
  */

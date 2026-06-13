@@ -1,5 +1,16 @@
 # Markdown to Html
 
+## Main update flow
+
+    npm run build:json
+
+### DB import
+
+    cd import
+    sh import-collections.sh
+
+## Description
+
 Цель репозитория - конвертация исходников *Хари-катхи* (из файлов формата `Markdown`) в коллекцию `MongoDB`.
 
 Исходные файлы *катхи* находятся в репозитории [Sridhar Maharaj Archive](https://github.com/scsm-ua/sridhar-maharaj-archive).
@@ -34,10 +45,3 @@
 
 Конвертирует указанный исходный файл(ы) в `html`, в папку `output/test`. Полезен для изучения отдельных недоразумений. 
 
-## ToDo
-- Убрать даты из тегов и сделать отдельной коллекцией.
-
-## DB import
-
-cd import
-sh import-collections.sh

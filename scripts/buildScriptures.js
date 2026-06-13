@@ -38,8 +38,8 @@ function buildScriptures() {
   };
 
   /**
-   * @type {Map<string, { title: string, versesMap: Map<string, { title: string, quote: string | null }> }>}
-   * scriptureSlug -> { title, versesMap: verseSlug -> { title, quote } }
+  * @type {Map<string, { title: string, versesMap: Map<string, { title: string, quote: string | null, refsCount: number }> }>}
+  * scriptureSlug -> { title, versesMap: verseSlug -> { title, quote, refsCount } }
    */
   const scripturesMap = new Map();
 
@@ -53,6 +53,7 @@ function buildScriptures() {
 
         const scriptures = meta?.scriptures;
         const verses = meta?.verses;
+        const refs = Array.isArray(meta?.refs) ? meta.refs : [];
         const quote = extractFirstItalicSection(body);
 
         if (!Array.isArray(scriptures) || !Array.isArray(verses)) {
@@ -88,7 +89,8 @@ function buildScriptures() {
 
             versesMap.set(verse.slug, {
               title: displayTitle,
-              quote
+              quote,
+              refsCount: refs.length
             });
           }
         }
@@ -146,7 +148,8 @@ function buildScriptures() {
             .map(([slug, verseData]) => ({
               slug,
               title: verseData.title,
-              quote: verseData.quote
+              quote: verseData.quote,
+              refsCount: verseData.refsCount
             }))
         }));
 

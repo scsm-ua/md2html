@@ -49,7 +49,7 @@ function warningLogger(field, slug) {
 /**
  *
  */
-function validateMeta(meta, { categories, tags }, filename) {
+function validateMeta(meta, { tags }, filename) {
 	const errors = [];
 	const warnings = [];
 
@@ -85,12 +85,6 @@ function validateMeta(meta, { categories, tags }, filename) {
 		console.warn(chalk.black.bgYellow.bold(msg));
 	}
 
-	if (meta.category && !categories.includes(meta.category)) {
-    const msg = `UNKNOWN CATEGORY "${meta.category}" in file "${filename}.md"!`;
-    console.error(chalk.blue.bgRed.bold(msg));
-    throw new Error("Encountered unknown category!");
-  }
-  
   const invalidTag = meta.tags?.find((tag) => !tags.includes(tag));
   
   if (invalidTag) {
