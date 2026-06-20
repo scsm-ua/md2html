@@ -29,7 +29,7 @@ class MonthRecord {
 		/** @type {Month} */
 		this.month = month;
 		
-		/** @type {Array<PostShort>} */
+		/** @type {Array<GroupedYearsPostShort>} */
 		this.records = [];
 	}
 }

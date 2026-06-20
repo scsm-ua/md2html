@@ -6,7 +6,8 @@ const shell = require('gulp-shell');
 /**/
 const { convertFtnFiles } = require('./scripts/footnotes2html');
 const { convertTextFiles } = require('./scripts/text2html');
-const { convertTags } = require('./scripts/convertTags');
+const { buildTagsAndCategories } = require('./scripts/buildTagsAndCategories');
+const { buildScriptures } = require('./scripts/buildScriptures');
 const { DIRS, FILES, GLOBS } = require('./scripts/const');
 const { getDictionaries } = require('./scripts/helpers');
 const { groupPostsByYears } = require('./scripts/groupPostsByYears');
@@ -123,12 +124,23 @@ gulp.task('build-grouped', () => {
 
 
 /**
- *
+ * Generates scriptures.json from notes MD source files.
  */
-gulp.task('build-tags', () => {
+gulp.task('build-scriptures', () => {
   return gulp
-    .src(GLOBS.JSON)
-    .pipe(convertTags())
+    .src(GLOBS.SCRIPTURES, { follow: true })
+    .pipe(buildScriptures())
+    .pipe(gulp.dest(DIRS.OUTPUT.JSON));
+});
+
+
+/**
+ * Generates categories.json and tags.json from metadata in MD source files.
+ */
+gulp.task('build-tags-and-categories', () => {
+  return gulp
+    .src(GLOBS.POSTS, { follow: true })
+    .pipe(buildTagsAndCategories())
     .pipe(gulp.dest(DIRS.OUTPUT.JSON));
 });
 
@@ -159,7 +171,7 @@ gulp.task('sass', () => {
  */
 gulp.task(
   'build-json',
-  gulp.series('clean-json', 'text-json', 'ftn-json', 'build-tags', 'build-grouped')
+  gulp.series('clean-json', 'text-json', 'ftn-json', 'build-tags-and-categories', 'build-scriptures', 'build-grouped')
 );
 
 /**/

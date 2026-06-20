@@ -15,7 +15,6 @@ function readSlugList(name) {
  */
 function getDictionaries() {
   return {
-    categories: readSlugList(FILES.ARCHIVE.CATEGORIES),
     footnotesByFile: JSON.parse(
       fs.readFileSync(DIRS.INPUT.FOOTNOTES_FILE).toString()
     ),

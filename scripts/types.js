@@ -10,19 +10,13 @@
  */
 
 /**
- * @typedef {Object} PostShort
- * @property {{ src: string, bytes: number, duration: string } | null} audio
+ * @typedef {Object} GroupedYearsPostShort
+ * @property {{ src: string, duration: string } | null} audio
  * @property {string} author
- * @property {string | null} category
- * @property {string} date
- * @property {string} id
- * @property {string} language
- * @property {{ index: string | null, slug: string | null } | null} legacy
+ * @property {boolean} [hasCategory]
  * @property {string | null} recordId
  * @property {string} slug
- * @property {string[]} tags
  * @property {string} title
- * @property {string | null} year
  */
 
 /**
@@ -75,8 +69,22 @@
 /* Dictionaries */
 
 /**
+ * @typedef {Object} ScriptureVerse
+ * @property {string} slug
+ * @property {string} title
+ * @property {string | null} quote
+ * @property {number} refsCount
+ */
+
+/**
+ * @typedef {Object} Scripture
+ * @property {string} slug
+ * @property {string} title
+ * @property {Array<ScriptureVerse>} verses
+ */
+
+/**
  * @typedef {Object} Dictionaries
- * @property {Array<string>} categories - slugs of the categories.
  * @property {Array<FootnotesByFile>} footnotesByFile
  * @property {Array<string>} tags - slugs of the tags.
  */
