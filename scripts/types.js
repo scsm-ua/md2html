@@ -13,6 +13,7 @@
  * @typedef {Object} GroupedYearsPostShort
  * @property {{ src: string, duration: string } | null} audio
  * @property {string} author
+ * @property {boolean} [hasCategory]
  * @property {string | null} recordId
  * @property {string} slug
  * @property {string} title
