@@ -17,40 +17,6 @@ class FootnotesConvertor {
 	textHtml;						// {string} footnote's main text as HTML string.
 	
 	/**/
-	static convertToHtml({ meta, text }) {
-		return `
-			<!DOCTYPE html>
-			<html lang="en">
-			
-			<head>
-				<meta charset="UTF-8">
-				<title>${meta.slug}</title>
-				<link rel="stylesheet" href="../styles.css">
-				<!-- For the old articles -->
-				<link rel="stylesheet" href="../../styles.css">
-				<!-- For the deep footnotes -->
-				<link rel="stylesheet" href="../../../styles.css">
-			</head>
-			
-			<body>
-				<main>
-					<div class="Meta">
-						<details>
-							<summary>Meta data</summary>
-							<pre><code>${JSON.stringify(meta, null, 2)}</code></pre>
-						</details>
-					</div>
-					
-					<div class="Footnote">
-						<div>${text}</div>
-					</div>
-				</main>
-			</body>
-			</html>
-		`;
-	}
-	
-	/**/
 	constructor(dataString, textParser) {
 		const [meta, text] = dataString.trimStart().split('---\n')
 			.filter(Boolean)
@@ -90,18 +56,13 @@ class FootnotesConvertor {
 	
 	/**
 	 * Public method.
-	 * @param isJsonMode {boolean}
 	 * @return {string}
 	 */
-	convert(isJsonMode) {
-		const args = {
+	convert() {
+		return JSON.stringify({
 			meta: this.meta,
 			text: this.textHtml
-		};
-		
-		return isJsonMode
-			? JSON.stringify(args, null, 2)
-			: FootnotesConvertor.convertToHtml(args);
+		}, null, 2);
 	}
 }
 

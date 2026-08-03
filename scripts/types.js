@@ -69,18 +69,13 @@
 /* Dictionaries */
 
 /**
- * @typedef {Object} ScriptureVerse
- * @property {string} slug
- * @property {string} title
- * @property {string | null} quote
- * @property {number} refsCount
- */
-
-/**
- * @typedef {Object} Scripture
- * @property {string} slug
- * @property {string} title
- * @property {Array<ScriptureVerse>} verses
+ * @typedef {Object} Shloka
+ * @property {string} slug - unique identifier, from the source file's frontmatter `slug`.
+ * @property {Array<{title: string, slug: string}>} scriptures
+ * @property {Array<{title: string, slug: string}>} verses
+ * @property {string} text - full body of the shloka source file (Markdown), first `---`-separated variant only.
+ * @property {string | null} quote - first italic segment (>2 words) from `text`.
+ * @property {number} refsCount - number of `refs` entries in the source frontmatter.
  */
 
 /**

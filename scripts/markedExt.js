@@ -1,28 +1,8 @@
-const { getFootnoteId, getUniqueLinkId, getFtnLinkId, getFootnoteNumber } = require('./helpers');
+const { getFootnoteId, getUniqueLinkId, getFootnoteNumber } = require('./helpers');
 const { REGEXP } = require('./const');
 
 // Placeholder injected after verse blocks so marked doesn't wrap them in <p> tags.
 const TEMPORARY_INSERT = '@#@';
-
-/**
- * Paragraph renderer for footnote definitions ([^id]: ...).
- * Used in ToHTML.js as footnotesRenderer.paragraph.
- * Wraps each definition in <p id="fN"> so back-links can scroll to it.
- */
-function processFootnotes(text) {
-  if (REGEXP.FOOTNOTE_REGEXP.test(text)) {
-    const footnote_id = REGEXP.FOOTNOTE_REGEXP.exec(text)[1];
-    // Keep inline to fix whitespaces.
-    const ftn = `<a class="Article__link Article__foot-link" href="#${getFootnoteId(footnote_id)}">[${getFootnoteNumber(footnote_id)}]</a>`;
-    
-    const _text = text.replace(REGEXP.FOOTNOTE_REGEXP, ftn)
-      .replace('.md"', '.html"');
-    
-    return `<p class="Article__footnote" id="${getFootnoteId(footnote_id)}">${_text}</p>`;
-  }
-  
-  return `<p>${text}</p>`;
-}
 
 
 /**
@@ -121,9 +101,6 @@ function postprocessText(html) {
 
 /**/
 module.exports = {
-  footnotesRenderer: {
-    paragraph: processFootnotes
-  },
   preprocessText,
   postprocessText,
   createTextRenderer

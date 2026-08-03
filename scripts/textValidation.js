@@ -18,8 +18,7 @@ const config = {
 const formatReport = formatterFactory('codeframe');
 const htmlValidate = new HtmlValidate(config);
 const PART = {
-  MAIN_TEXT: 'MAIN TEXT',
-  FOOTNOTES: 'FOOTNOTES'
+  MAIN_TEXT: 'MAIN TEXT'
 };
 
 /**/
@@ -112,21 +111,6 @@ function validateText(text, filename) {
 /**
  *
  */
-function validateFtn(text, filename) {
-  const pos = text.search(REGEXP.FOOTNOTE_REGEXP);
-  validateHtml(text, PART.FOOTNOTES, filename);
-  
-  if (pos >= 0) {
-    const msg = `MALFORMED FOOTNOTES for source file "${filename}.md"!`;
-    console.error(chalk.blue.bgRed.bold(msg));
-    console.log(text);
-  }
-}
-
-
-/**
- *
- */
 function validateHtml(str, part, filename) {
   htmlValidate.validateString(str)
     .then((report)=> {
@@ -141,7 +125,6 @@ function validateHtml(str, part, filename) {
 
 /**/
 module.exports = {
-  validateFtn,
   validateHtml,
   validateMeta,
   validateText

@@ -3,7 +3,6 @@ const { Transform } = require('stream');
 
 /**/
 const { preprocessText, postprocessText, createTextRenderer } = require('./markedExt');
-const { ToHTML } = require('./classes/ToHTML');
 const { ToJSON } = require('./classes/ToJSON');
 const { validateMeta, validateText } = require('./textValidation');
 
@@ -19,17 +18,16 @@ const textParserOptions = {
 
 /**
  * @param dictionaries {Dictionaries}
- * @param [isJsonMode] {boolean}
  * @returns {*}
  */
-function convertTextFiles(dictionaries, isJsonMode) {
+function convertTextFiles(dictionaries) {
   return new Transform({
     objectMode: true,
     
     transform(file, encoding, callback) {
       try {
         file.contents = Buffer.from(
-          text2html(file.contents.toString(), dictionaries, isJsonMode, file.stem)
+          text2html(file.contents.toString(), dictionaries, file.stem)
         );
         this.push(file);
         callback();
@@ -45,14 +43,11 @@ function convertTextFiles(dictionaries, isJsonMode) {
 /**
  * @param str {string}
  * @param dictionaries {Dictionaries}
- * @param [isJsonMode] {boolean}
  * @returns {string}
  */
-function text2html(str, dictionaries, isJsonMode, filename) {
+function text2html(str, dictionaries, filename) {
     const textParser = new Marked({ ...textParserOptions, renderer: createTextRenderer() });
-    const convertor = isJsonMode
-        ? new ToJSON(str, textParser, dictionaries.footnotesByFile, filename)
-        : new ToHTML(str, textParser, dictionaries.footnotesByFile, filename);
+    const convertor = new ToJSON(str, textParser, dictionaries.footnotesByFile, filename);
 
     const meta = convertor.getMeta();
 	validateMeta(meta, dictionaries, filename);

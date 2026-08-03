@@ -2,20 +2,16 @@
   "name": "md2html",
   "version": "0.0.1",
   "scripts": {
-    "build:html": "gulp build-html",
     "build:json": "gulp build-json",
-    "test:html": "gulp test-html",
     "update-source": "gulp update-source"
   },
   "dependencies": {
     "gulp-jsoncombine-array": "^1.0.0",
     "gulp-rename": "^2.0.0",
-    "gulp-sass": "^5.1.0",
     "gulp-shell": "^0.8.0",
     "html-format": "^1.1.7",
     "html-validate": "8.21.0",
     "marked": "^13.0.2",
-    "sass": "^1.77.8",
     "sridhar-maharaj-archive": "scsm-ua/sridhar-maharaj-archive#main",
     "yaml": "^2.5.0"
   },

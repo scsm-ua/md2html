@@ -25,14 +25,14 @@ const parser = new Marked({
 /**
  *
  */
-function convertFtnFiles(isJsonMode) {
+function convertFtnFiles() {
   return new Transform({
     objectMode: true,
     
     transform(file, encoding, callback) {
       try {
         file.contents = Buffer.from(
-          ftn2html(file.contents.toString(), isJsonMode)
+          ftn2html(file.contents.toString())
         );
         this.push(file);
         callback();
@@ -48,7 +48,7 @@ function convertFtnFiles(isJsonMode) {
 /**
  *
  */
-function ftn2html(str, isJsonMode) {
+function ftn2html(str) {
 	const convertor = new FootnotesConvertor(str, parser);
 	validateHtml(
 		convertor.getText(),
@@ -56,7 +56,7 @@ function ftn2html(str, isJsonMode) {
 		convertor.getMeta().slug
 	);
 	
-	return convertor.convert(isJsonMode);
+	return convertor.convert();
 }
 
 
